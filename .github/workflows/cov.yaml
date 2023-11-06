@@ -20,7 +20,7 @@ jobs:
       - name: Generate a code coverage report using gcovr
         run: |
           /usr/bin/python3 -m pip install gcovr
-          /usr/bin/python3 -m gcovr --exclude build/* --exclude test/* --html-details
+          /usr/bin/python3 -m gcovr --exclude build/* --exclude test/game_objects/* --exclude test/generation/* --html-details
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
