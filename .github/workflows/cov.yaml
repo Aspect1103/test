@@ -19,8 +19,8 @@ jobs:
         run: ctest --output-on-failure --test-dir ${{ github.workspace }}/build/test
       - name: Run gcovr
         run: |
-          /usr/bin/python3 -m pip install gcovr
-          /usr/bin/python3 -m gcovr --exclude build --exclude test --html output.html
+          pip install gcovr
+          gcovr --exclude build --exclude test --html-nested output.html
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
