@@ -17,8 +17,10 @@ jobs:
           buildDirectory: "${{ github.workspace }}/build"
       - name: Run CTest
         run: ctest --output-on-failure --test-dir ${{ github.workspace }}/build/test
-      - name: Generate a code coverage report
-        run: /usr/bin/python3 -m gcovr --exclude build/* --exclude test/* --html-details
+      - name: Generate a code coverage report using gcovr
+        run: |
+          /usr/bin/python3 -m pip install gcovr
+          /usr/bin/python3 -m gcovr --exclude build/* --exclude test/* --html-details
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
