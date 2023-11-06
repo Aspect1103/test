@@ -22,6 +22,6 @@ jobs:
         with:
           root: "${{ github.workspace }}"
           exclude: |
-            build
-            test
+            build/*
+            test/*
           output: coverage.xml
