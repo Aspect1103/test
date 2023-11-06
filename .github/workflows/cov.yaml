@@ -17,10 +17,17 @@ jobs:
           buildDirectory: "${{ github.workspace }}/build"
       - name: Run CTest
         run: ctest --output-on-failure --test-dir ${{ github.workspace }}/build/test
-      - name: Generate a code coverage report using gcovr
-        run: python3 -m pip install gcovr
-      - name: Generate HTML report
-        run: gcovr --exclude-directories build --exclude-directories test --html-details output.html
+      - name: Action report
+        uses: threeal/gcovr-action@v1.0.0
+        with:
+          excludes: |
+            build/*
+            test/*
+          coveralls-out: coveralls.json
+      - name: Custom report
+        run: |
+          python3 -m pip install gcovr
+          gcovr --exclude-directories build --exclude-directories test --html-details output.html
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
