@@ -24,3 +24,8 @@ jobs:
             build/*
             test/*
           coveralls-out: coveralls.json
+      - name: Upload coverage report to github
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: coveralls.json
