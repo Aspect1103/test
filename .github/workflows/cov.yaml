@@ -1,0 +1,19 @@
+name: Coverage
+on:
+  push: master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up CMake
+        uses: lukka/get-cmake@v3.25.2
+      - name: Configure and build CMake
+        uses: lukka/run-cmake@v3
+        with:
+          cmakeListsTxtPath: "${{ github.workspace }}/CMakeLists.txt"
+          buildDirectory: "${{ github.workspace }}/build"
+      - name: Run CTest
+        run: ctest --output-on-failure --test-dir ${{ github.workspace }}/build/test
+      - name: Run gcov on all source files
+        run: gcov -pb -o ${{ github.workspace }}/build/src/CMakeFiles/hades_extensions.dir/ ${{ github.workspace }}/src/hades_extensions/*.cpp
