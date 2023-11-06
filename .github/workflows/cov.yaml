@@ -27,7 +27,7 @@ jobs:
       - name: Custom report
         run: |
           python3 -m pip install gcovr
-          gcovr --exclude-directories build --exclude-directories test --html-details output.html
+          python3 -m gcovr --exclude-directories build --exclude-directories test --html-details output.html
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
