@@ -20,7 +20,7 @@ jobs:
       - name: Run gcovr
         run: |
           pip install gcovr
-          gcovr --exclude build --exclude test --html-nested output.html
+          gcovr --exclude build --exclude test --html-details output.html
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
