@@ -25,9 +25,7 @@ jobs:
             test/*
           coveralls-out: coveralls.json
       - name: Custom report
-        run: |
-          /usr/bin/python3 -m pip install gcovr
-          /usr/bin/python3 -m gcovr --coveralls coveralls.json
+        run: /usr/bin/python3 -m gcovr --exclude build/* --exclude test/* --coveralls coveralls.json
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
