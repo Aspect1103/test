@@ -17,5 +17,5 @@ jobs:
           buildDirectory: "${{ github.workspace }}/build"
       - name: Run CTest
         run: ctest --output-on-failure --test-dir ${{ github.workspace }}/build/test
-      - name: Run gcov on all source files
-        run: gcov -pb -o ${{ github.workspace }}/build/src/CMakeFiles/hades_extensions.dir/ ${{ github.workspace }}/src/hades_extensions/*.cpp
+      - name: Generate a code coverage report
+        uses: threeal/gcovr-action@v1.0.0
