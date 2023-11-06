@@ -23,3 +23,4 @@ jobs:
           excludes: |
             build/*
             test/*
+          coveralls-out: coveralls.json
