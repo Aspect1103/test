@@ -18,12 +18,7 @@ jobs:
       - name: Run CTest
         run: ctest --output-on-failure --test-dir ${{ github.workspace }}/build/test
       - name: Generate a code coverage report
-        uses: threeal/gcovr-action@v1.0.0
-        with:
-          excludes: |
-            build/*
-            test/*
-          coveralls-out: coveralls.json
+        run: /usr/bin/python3 -m gcovr --exclude build/* --exclude test/* --html-details
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
