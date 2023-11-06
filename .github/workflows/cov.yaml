@@ -19,3 +19,9 @@ jobs:
         run: ctest --output-on-failure --test-dir ${{ github.workspace }}/build/test
       - name: Generate a code coverage report
         uses: threeal/gcovr-action@v1.0.0
+        with:
+          root: "${{ github.workspace }}"
+          exclude:
+            - "${{ github.workspace }}/build"
+            - "${{ github.workspace }}/test"
+          output: coverage.xml
