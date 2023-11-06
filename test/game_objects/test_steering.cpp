@@ -225,7 +225,7 @@ TEST(Tests, TestObstacleAvoidanceSingleForward) {
 TEST(Tests, TestObstacleAvoidanceSingleLeft) {
   // This is due to floating point precision
   const Vec2d single_left_result{obstacle_avoidance({100, 100}, {0, 100}, {{0, 2}})};
-  ASSERT_EQ(single_left_result.x, 0.8660254037844387);
+  ASSERT_EQ(single_left_result.x, 0.8660254037844386);
   ASSERT_DOUBLE_EQ(single_left_result.y, -0.5);
 }
 
@@ -241,7 +241,7 @@ TEST(Tests, TestObstacleAvoidanceSingleRight) {
 TEST(Tests, TestObstacleAvoidanceLeftForward) {
   // This is due to floating point precision
   const Vec2d left_forward_result{obstacle_avoidance({100, 100}, {0, 100}, {{0, 2}, {1, 2}})};
-  ASSERT_EQ(left_forward_result.x, 0.8660254037844387);
+  ASSERT_EQ(left_forward_result.x, 0.8660254037844386);
   ASSERT_DOUBLE_EQ(left_forward_result.y, -0.5);
 }
 
@@ -304,7 +304,7 @@ TEST(Tests, TestSeekNegativePositions) { ASSERT_EQ(seek({-50, -50}, {-50, -50}),
 TEST(Tests, TestWanderNonMoving) {
   // This is due to floating point precision
   const Vec2d non_moving_result{wander({0, 0}, 60)};
-  ASSERT_EQ(non_moving_result.x, 0.8660254037844385);
+  ASSERT_EQ(non_moving_result.x, 0.8660254037844386);
   ASSERT_DOUBLE_EQ(non_moving_result.y, -0.5);
 }
 

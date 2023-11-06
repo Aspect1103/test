@@ -148,7 +148,7 @@ TEST_F(RegistryFixture, TestRegistryGameObjectSameComponent) {
 /// Test that an exception is thrown if a system is not registered.
 TEST_F(RegistryFixture, TestRegistryZeroSystems){
     ASSERT_THROW_MESSAGE(registry.find_system<TestSystem>(), RegistryException,
-                         "The system `struct TestSystem` is not registered with the registry.")}
+                         "The system `10TestSystem` is not registered with the registry.")}
 
 /// Test that a system is updated correctly.
 TEST_F(RegistryFixture, TestRegistrySystemUpdate) {
@@ -158,7 +158,7 @@ TEST_F(RegistryFixture, TestRegistrySystemUpdate) {
   registry.add_components(0, {std::make_shared<TestGameObjectComponentTwo>(test_list)});
   registry.add_system<TestSystem>();
   ASSERT_THROW_MESSAGE(registry.add_system<TestSystem>(), RegistryException,
-                       "The system `struct TestSystem` is already registered with the registry.")
+                       "The system `10TestSystem` is already registered with the registry.")
   auto system_result{registry.find_system<TestSystem>()};
   ASSERT_NE(system_result, nullptr);
 
