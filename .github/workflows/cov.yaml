@@ -17,6 +17,8 @@ jobs:
           buildDirectory: "${{ github.workspace }}/build"
       - name: Run CTest
         run: ctest --output-on-failure --test-dir ${{ github.workspace }}/build/test
+      - name: Install gcovr
+        run: /usr/bin/python3 -m pip install gcovr
       - name: Custom report
         run: /usr/bin/python3 -m gcovr
       - name: Upload coverage report to github
