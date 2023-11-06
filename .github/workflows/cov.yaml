@@ -20,9 +20,10 @@ jobs:
       - name: Generate a code coverage report using gcovr
         run: |
           /usr/bin/python3 -m pip install gcovr
+          cd ${{ github.workspace }}
           /usr/bin/python3 -m gcovr --exclude-directories build --exclude-directories test --html-details details.html
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
-          path: coveralls.json
+          path: details.html
