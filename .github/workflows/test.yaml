@@ -56,10 +56,12 @@ jobs:
           cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
           buildDirectory: "${{ github.workspace }}/build"
       - name: Run CTest
-        run: ctest --output-on-failure
+        run: ctest --output-on-failure --test-dir "${{ github.workspace }}/build"
       - name: Generate Coverage Report
         if: matrix.os == 'ubuntu-latest'
-        uses: threeal/gcovr-action@v1.0.0
+        run: |
+          pip install gcovr
+          gcovr --exclude build --exclude src/hades_extensions/test --html-details output.html
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
