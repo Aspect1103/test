@@ -54,7 +54,9 @@ jobs:
           buildDirectory: "${{ github.workspace }}/build"
       - name: Run CTest
         run: |
-          ls -R build
+          ls build
+          echo "frefrt"
+          ls build/test
           ctest --output-on-failure --test-dir "${{ github.workspace }}/build/test"
       - name: Generate Coverage Report
         if: matrix.os == 'ubuntu-latest'
