@@ -14,14 +14,6 @@ set(CPP_LIB hades_extensions_lib)
 set(TEST_MODULE hades_extensions_tests)
 project(${PY_MODULE} LANGUAGES CXX)
 
-# Enable coverage if supported by the compiler
-if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    message(STATUS "Compiler is GNU or Clang, coverage enabled")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
-else ()
-    message(STATUS "Compiler is not GNU or Clang, coverage disabled")
-endif ()
 
 # TODO: Clang-tidy just fails the build for some reason
 ## Enable clang-tidy if found
