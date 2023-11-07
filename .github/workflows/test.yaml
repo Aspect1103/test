@@ -40,7 +40,6 @@ jobs:
           path-to-lcov: ./coverage.lcov
   cpp:
     runs-on: ${{ matrix.os }}
-    working-directory: ${{ github.workspace }}/src/hades_extensions
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -52,17 +51,21 @@ jobs:
       - name: Set up CMake
         uses: lukka/get-cmake@v3.25.2
       - name: Configure and build CMake
+        working-directory: ${{ github.workspace }}/src/hades_extensions
         uses: lukka/run-cmake@v3
         with:
           buildDirectory: "build"
       - name: Run CTest
+        working-directory: ${{ github.workspace }}/src/hades_extensions
         uses: threeal/ctest-action@main
       - name: Generate Coverage Report
+        working-directory: ${{ github.workspace }}/src/hades_extensions
         if: matrix.os == 'ubuntu-latest'
         run: |
           pip install gcovr
           gcovr --exclude build --exclude test --html-details output.html
       - name: Upload coverage report to github
+        working-directory: ${{ github.workspace }}/src/hades_extensions
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
