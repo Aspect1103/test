@@ -6,6 +6,9 @@ on:
       - master
   pull_request:
 
+env:
+  EXTENSIONS_DIR: ${{ github.workspace }}/src/hades_extensions
+
 jobs:
   python:
     runs-on: ${{ matrix.os }}
@@ -50,15 +53,15 @@ jobs:
       - name: Configure and build CMake
         uses: lukka/run-cmake@v3
         with:
-          cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
-          buildDirectory: "${{ github.workspace }}/build"
+          cmakeListsTxtPath: "${{ EXTENSIONS_DIR }}/CMakeLists.txt"
+          buildDirectory: "${{ EXTENSIONS_DIR }}/build"
       - name: Run CTest
-        run: ctest --output-on-failure --test-dir ${{ github.workspace }}/src/hades_extensions/test
+        run: ctest --output-on-failure --test-dir ${{ EXTENSIONS_DIR }}/test
       - name: Generate Coverage Report
         if: matrix.os == 'ubuntu-latest'
         run: |
           pip install gcovr
-          gcovr --root src/hades_extensions --html-details output.html
+          gcovr --root ${{ EXTENSIONS_DIR }} --html-details output.html
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
