@@ -7,7 +7,7 @@ on:
   pull_request:
 
 env:
-  EXTENSIONS_DIR: ${{ github.workspace }}/src/hades_extensions
+  EXTENSIONS_DIR: "${{ github.workspace }}/src/hades_extensions"
 
 jobs:
   python:
