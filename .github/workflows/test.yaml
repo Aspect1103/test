@@ -6,9 +6,6 @@ on:
       - master
   pull_request:
 
-env:
-  EXTENSIONS_DIR: ${{ github.workspace }}/src/hades_extensions
-
 jobs:
   python:
     runs-on: ${{ matrix.os }}
@@ -56,9 +53,8 @@ jobs:
           cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
           buildDirectory: "${{ github.workspace }}/src/hades_extensions/build"
       - name: Run CTest
-        uses: threeal/ctest-action@main
+        run: ctest --output-on-failure --test-dir "${{ github.workspace }}/src/hades_extensions/build"
       - name: Generate Coverage Report
-        working-directory: ${{ github.workspace }}/src/hades_extensions
         if: matrix.os == 'ubuntu-latest'
         run: |
           pip install gcovr
