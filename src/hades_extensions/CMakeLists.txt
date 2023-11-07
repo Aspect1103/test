@@ -45,6 +45,7 @@ endif ()
 
 # Add the subdirectories for the different parts of the project
 include(FetchContent)
+enable_testing()
 add_subdirectory(src)
 add_subdirectory(test)
 
