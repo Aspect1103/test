@@ -58,7 +58,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           pip install gcovr
-          gcovr --html-details output.html
+          gcovr --root src/hades_extensions --html-details output.html
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
