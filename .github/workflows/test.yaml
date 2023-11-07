@@ -51,9 +51,9 @@ jobs:
         uses: lukka/run-cmake@v3
         with:
           cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
-          buildDirectory: "${{ github.workspace }}/src/hades_extensions/build"
+          buildDirectory: "${{ github.workspace }}/build"
       - name: Run CTest
-        run: ctest --output-on-failure --test-dir "${{ github.workspace }}/src/hades_extensions"
+        run: ctest --output-on-failure --test-dir "${{ github.workspace }}/build/test -C Debug"
       - name: Generate Coverage Report
         if: matrix.os == 'ubuntu-latest'
         run: |
