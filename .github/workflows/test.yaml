@@ -53,15 +53,15 @@ jobs:
       - name: Configure and build CMake
         uses: lukka/run-cmake@v3
         with:
-          cmakeListsTxtPath: "${{ EXTENSIONS_DIR }}/CMakeLists.txt"
-          buildDirectory: "${{ EXTENSIONS_DIR }}/build"
+          cmakeListsTxtPath: "$EXTENSIONS_DIR/CMakeLists.txt"
+          buildDirectory: "$EXTENSIONS_DIR/build"
       - name: Run CTest
-        run: ctest --output-on-failure --test-dir ${{ EXTENSIONS_DIR }}/test
+        run: ctest --output-on-failure --test-dir EXTENSIONS_DIR/test
       - name: Generate Coverage Report
         if: matrix.os == 'ubuntu-latest'
         run: |
           pip install gcovr
-          gcovr --root ${{ EXTENSIONS_DIR }} --html-details output.html
+          gcovr --root $EXTENSIONS_DIR --html-details output.html
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
