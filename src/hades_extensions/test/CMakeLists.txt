@@ -28,4 +28,5 @@ target_link_libraries(
         gtest_main
         ${CPP_LIB}
 )
+enable_testing()
 add_test(NAME Tests COMMAND ${TEST_MODULE})

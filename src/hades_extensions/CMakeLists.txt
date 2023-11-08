@@ -46,6 +46,7 @@ endif ()
 # Add the subdirectories for the different parts of the project
 include(FetchContent)
 add_subdirectory(src)
+enable_testing()
 add_subdirectory(test)
 
 # TODO: Get coverage fully working (could get temporary github repo to test it)
