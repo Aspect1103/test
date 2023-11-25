@@ -1,4 +1,5 @@
 """Manages various building/compiling operations on the game."""
+
 from __future__ import annotations
 
 # Builtin
@@ -47,12 +48,14 @@ class CMakeBuild(build_ext):
         build_temp.mkdir(parents=True, exist_ok=True)
 
         # Compile and build the CMake extension
+        # TODO: Add CMake presets here
         subprocess.run(
             " ".join(
                 [
                     "cmake",
                     str(current_dir.joinpath(ext.sources[0])),
                     f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE={build_dir}",
+                    "-DDO_TESTS=OFF",
                 ],
             ),
             cwd=build_temp,

@@ -32,11 +32,11 @@ void FootprintSystem::update(const double delta_time) const {
     footprints->footprints.push_back(current_position);
 
     // Update the path list for all SteeringMovement components
-    get_registry()->find_system<SteeringMovementSystem>()->update_path_list(game_object_id, footprints->footprints);
+    get_registry()->get_system<SteeringMovementSystem>()->update_path_list(game_object_id, footprints->footprints);
   }
 }
 
-auto KeyboardMovementSystem::calculate_keyboard_force(const GameObjectID game_object_id) const -> Vec2d {
+auto KeyboardMovementSystem::calculate_force(GameObjectID game_object_id) const -> Vec2d {
   auto keyboard_movement{get_registry()->get_component<KeyboardMovement>(game_object_id)};
   return Vec2d{static_cast<double>(static_cast<int>(keyboard_movement->moving_east) -
                                    static_cast<int>(keyboard_movement->moving_west)),
@@ -45,7 +45,7 @@ auto KeyboardMovementSystem::calculate_keyboard_force(const GameObjectID game_ob
          get_registry()->get_component<MovementForce>(game_object_id)->get_value();
 }
 
-auto SteeringMovementSystem::calculate_steering_force(const GameObjectID game_object_id) const -> Vec2d {
+auto SteeringMovementSystem::calculate_force(GameObjectID game_object_id) const -> Vec2d {
   // Determine if the movement state should change or not
   auto steering_movement{get_registry()->get_component<SteeringMovement>(game_object_id)};
   const auto kinematic_owner{get_registry()->get_kinematic_object(game_object_id)};
@@ -80,8 +80,8 @@ auto SteeringMovementSystem::calculate_steering_force(const GameObjectID game_ob
         steering_force +=
             obstacle_avoidance(kinematic_owner->position, kinematic_owner->velocity, get_registry()->get_walls());
         break;
-      case SteeringBehaviours::Pursuit:
-        steering_force += pursuit(kinematic_owner->position, kinematic_target->position, kinematic_target->velocity);
+      case SteeringBehaviours::Pursue:
+        steering_force += pursue(kinematic_owner->position, kinematic_target->position, kinematic_target->velocity);
         break;
       case SteeringBehaviours::Seek:
         steering_force += seek(kinematic_owner->position, kinematic_target->position);

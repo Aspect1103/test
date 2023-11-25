@@ -3,7 +3,7 @@ name: Tests
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
         shell: bash
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -42,25 +42,16 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
       - name: Set up CMake
         uses: lukka/get-cmake@v3.25.2
       - name: Configure and build CMake
-        uses: lukka/run-cmake@v3
+        uses: lukka/run-cmake@v10.7
         with:
           cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
           buildDirectory: "${{ github.workspace }}/build"
+          configurePreset: "lint"
       - name: Run CTest
-        run: ctest --output-on-failure --test-dir "${{ github.workspace }}/build/test"
-      - name: Generate Coverage Report
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          pip install gcovr
-          gcovr --exclude build --exclude test --html-details output.html
-      - name: Upload coverage report to github
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage-report
-          path: output.html
+        run: ctest --output-on-failure --test-dir ${{ github.workspace }}/build/tests

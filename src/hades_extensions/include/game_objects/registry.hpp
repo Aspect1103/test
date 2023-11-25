@@ -12,12 +12,11 @@
 #include "steering.hpp"
 
 // ----- TYPEDEFS ------------------------------
-// Create some type aliases to simplify the code
-using ActionFunction = std::function<double(int)>;
+// Represents unique identifiers for game objects
 using GameObjectID = int;
-using ObjectType = std::type_index;
+using ActionFunction = std::function<double(int)>;
 
-// ----- STRUCTURES ------------------------------
+// ----- BASE TYPES ------------------------------
 // Add a forward declaration for the registry class
 class Registry;
 
@@ -98,35 +97,22 @@ class SystemBase {
 
 // ----- EXCEPTIONS ------------------------------
 /// Raised when an error occurs with the registry.
-class RegistryException : public std::runtime_error {
- public:
+struct RegistryError : public std::runtime_error {
+  /// Initialise the object
+  ///
+  /// @param not_registered_type - The type of item that is not registered.
+  explicit RegistryError(const std::string &error = "is not registered with the registry")
+      : std::runtime_error("The templated type " + error + "."){};
+
   /// Initialise the object.
   ///
   /// @tparam T - The type of item that is not registered.
   /// @param not_registered_type - The type of item that is not registered.
   /// @param value - The value that is not registered.
-  /// @param error - The error raised by the registry.
   template <typename T>
-  RegistryException(const std::string &not_registered_type, const T &value,
-                    const std::string &error = "is not registered with the registry")
-      : std::runtime_error("The " + not_registered_type + " `" + to_string(value) + "` " + error + "."){};
-
- private:
-  /// Convert a value to a string.
-  ///
-  /// @param value - The value to convert to a string.
-  /// @return The value as a string.
-  static inline auto to_string(const char *value) -> std::string { return {value}; }
-
-  /// Convert a value to a string.
-  ///
-  /// @tparam T - The type of value to convert to a string.
-  /// @param value - The value to convert to a string.
-  /// @return The value as a string.
-  template <typename T>
-  static inline auto to_string(const T &value) -> std::string {
-    return std::to_string(value);
-  }
+  RegistryError(const std::string &not_registered_type, const T &value, const std::string &extra = "")
+      : std::runtime_error("The " + not_registered_type + " `" + std::to_string(value) +
+                           "` is not registered with the registry" + extra + "."){};
 };
 
 // ----- CLASSES ------------------------------
@@ -135,14 +121,16 @@ class Registry {
  public:
   /// Create a new game object.
   ///
+  /// @param components - The components to add to the game object.
   /// @param kinematic - Whether the game object should have a kinematic object or not.
   /// @return The game object ID.
-  auto create_game_object(bool kinematic = false) -> GameObjectID;
+  auto create_game_object(const std::vector<std::shared_ptr<ComponentBase>> &&components, bool kinematic = false)
+      -> GameObjectID;
 
   /// Delete a game object.
   ///
   /// @param game_object_id - The game object ID.
-  /// @throws RegistryException - If the game object is not registered.
+  /// @throws RegistryError - If the game object is not registered.
   void delete_game_object(GameObjectID game_object_id);
 
   /// Checks if a game object has a given component or not.
@@ -150,24 +138,16 @@ class Registry {
   /// @param game_object_id - The game object ID.
   /// @param component_type - The type of component to check for.
   /// @return Whether the game object has the component or not.
-  [[nodiscard]] inline auto has_component(const GameObjectID game_object_id, const ObjectType component_type) const
-      -> bool {
-    return components_.contains(component_type) && components_.at(component_type).contains(game_object_id);
+  [[nodiscard]] inline auto has_component(const GameObjectID game_object_id,
+                                          const std::type_index &component_type) const -> bool {
+    return game_objects_.contains(game_object_id) && game_objects_.at(game_object_id).contains(component_type);
   }
-
-  /// Add multiple components to a game object.
-  ///
-  /// @param game_object_id - The game object ID.
-  /// @param components - The components to add to the game object.
-  /// @throws RegistryException - If the game object is not registered.
-  void add_components(GameObjectID game_object_id, const std::vector<std::shared_ptr<ComponentBase>> &&components);
 
   /// Get a component from the registry.
   ///
   /// @tparam T - The type of component to get.
   /// @param game_object_id - The game object ID.
-  /// @throws RegistryException - If the game object is not registered or if the game object does not have the
-  /// component.
+  /// @throws RegistryError - If the game object is not registered or if the game object does not have the component.
   /// @return The component from the registry.
   template <typename T>
   inline auto get_component(const GameObjectID game_object_id) const -> std::shared_ptr<T> {
@@ -178,8 +158,9 @@ class Registry {
   ///
   /// @param game_object_id - The game object ID.
   /// @param component_type - The type of component to get.
+  /// @throws RegistryError - If the game object is not registered or if the game object does not have the component.
   /// @return The component from the registry.
-  [[nodiscard]] auto get_component(GameObjectID game_object_id, ObjectType component_type) const
+  [[nodiscard]] auto get_component(GameObjectID game_object_id, const std::type_index &component_type) const
       -> std::shared_ptr<ComponentBase>;
 
   /// Find all the game objects that have the required components.
@@ -209,34 +190,35 @@ class Registry {
 
   /// Add a system to the registry.
   ///
-  /// @tparam SystemType - The type of system to add.
-  /// @throws RegistryException - If the system is already registered.
-  template <typename SystemType>
+  /// @tparam T - The type of system to add.
+  /// @throws RegistryError - If the system is already registered.
+  template <typename T>
   void add_system() {
     // Check if the system is already registered
-    const std::type_info &system_type{typeid(SystemType)};
+    const std::type_index system_type{typeid(T)};
     if (systems_.contains(system_type)) {
-      throw RegistryException("system", system_type.name(), "is already registered with the registry");
+      throw RegistryError("is already registered with the registry");
     }
 
     // Add the system to the registry
-    systems_[system_type] = std::make_shared<SystemType>(this);
+    systems_[system_type] = std::make_shared<T>(this);
   }
 
-  /// Find a system in the registry.
+  /// Get a system from the registry.
   ///
-  /// @tparam T - The type of system to find.
-  /// @throws RegistryException - If the system is not registered.
-  /// @return The system.
+  /// @tparam T - The type of system to get.
+  /// @throws RegistryError - If the system is not registered.
+  /// @return The system from the registry.
   template <typename T>
-  auto find_system() const -> std::shared_ptr<T> {
+  auto get_system() const -> std::shared_ptr<T> {
     // Check if the system is registered
-    auto system_result{systems_.find(typeid(T))};
+    const std::type_index system_type{typeid(T)};
+    auto system_result{systems_.find(system_type)};
     if (system_result == systems_.end()) {
-      throw RegistryException("system", typeid(T).name());
+      throw RegistryError();
     }
 
-    // Return the system casting it to T
+    // Return the system
     return std::static_pointer_cast<T>(system_result->second);
   }
 
@@ -252,7 +234,7 @@ class Registry {
   /// Get the kinematic object for a game object.
   ///
   /// @param game_object_id - The game object ID.
-  /// @throws RegistryException - If the game object is not registered or if the game object does not have a kinematic
+  /// @throws RegistryError - If the game object is not registered or if the game object does not have a kinematic
   /// object.
   /// @return The kinematic object.
   [[nodiscard]] auto get_kinematic_object(GameObjectID game_object_id) const -> std::shared_ptr<KinematicObject>;
@@ -271,14 +253,11 @@ class Registry {
   /// The next game object ID to use.
   GameObjectID next_game_object_id_{0};
 
-  /// The components registered with the registry.
-  std::unordered_map<ObjectType, std::unordered_set<GameObjectID>> components_;
-
-  /// The game objects registered with the registry.
-  std::unordered_map<GameObjectID, std::unordered_map<ObjectType, std::shared_ptr<ComponentBase>>> game_objects_;
+  /// The game objects and their components registered with the registry.
+  std::unordered_map<GameObjectID, std::unordered_map<std::type_index, std::shared_ptr<ComponentBase>>> game_objects_;
 
   /// The systems registered with the registry.
-  std::unordered_map<ObjectType, std::shared_ptr<SystemBase>> systems_;
+  std::unordered_map<std::type_index, std::shared_ptr<SystemBase>> systems_;
 
   /// The kinematic objects registered with the registry.
   std::unordered_map<GameObjectID, std::shared_ptr<KinematicObject>> kinematic_objects_;

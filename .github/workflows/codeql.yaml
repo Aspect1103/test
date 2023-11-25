@@ -20,7 +20,7 @@ jobs:
         language: ["python", "cpp"]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Python 3.11
         if: matrix.language == 'python'
         uses: actions/setup-python@v4
@@ -39,17 +39,18 @@ jobs:
         if: matrix.language == 'python'
         run: poetry install --no-interaction
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           setup-python-dependencies: false
       - name: Configure and build CMake
         if: matrix.language == 'cpp'
-        uses: lukka/run-cmake@v3
+        uses: lukka/run-cmake@v10.7
         with:
           cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
           buildDirectory: "${{ github.workspace }}/build"
+          configurePreset: "lint"
       - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{ matrix.language }}"
