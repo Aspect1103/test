@@ -18,9 +18,9 @@ jobs:
         shell: bash
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v4.7.1
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
@@ -31,7 +31,7 @@ jobs:
       - name: Run Tox
         run: tox
       - name: Upload coverage report
-        uses: coverallsapp/github-action@v2
+        uses: coverallsapp/github-action@v2.2.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ./coverage.lcov
@@ -42,15 +42,16 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
       - name: Set up MSVC
-        uses: ilammy/msvc-dev-cmd@v1
+        if: matrix.os == 'windows-latest'
+        uses: ilammy/msvc-dev-cmd@v1.12.1
       - name: Set up CMake
-        uses: lukka/get-cmake@v3.25.2
+        uses: lukka/get-cmake@v3.27.7
       - name: Configure and build CMake
         uses: lukka/run-cmake@v10.7
         with:
           cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
-          configurePreset: "lint"
+          configurePreset: "Coverage"
       - name: Run CTest
         run: ctest --output-on-failure --test-dir ${{ github.workspace }}/build/tests

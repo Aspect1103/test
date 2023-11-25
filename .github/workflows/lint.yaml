@@ -11,16 +11,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
       - name: Set up MSVC
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: ilammy/msvc-dev-cmd@v1.12.1
       - name: Set up CMake
-        uses: lukka/get-cmake@v3.25.2
+        uses: lukka/get-cmake@v3.27.7
       - name: Configure and build CMake
         uses: lukka/run-cmake@v10.7
         with:
           cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
-          configurePreset: "lint"
+          configurePreset: "Lint"
       - name: Run clang-format
         uses: jidicula/clang-format-action@v4.11.0
         with:
