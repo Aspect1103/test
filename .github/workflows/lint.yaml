@@ -22,6 +22,6 @@ jobs:
           cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
           configurePreset: "lint"
       - name: Run clang-format
-        uses: jidicula/clang-format-action@v4
+        uses: jidicula/clang-format-action@v4.11.0
         with:
           check-path: "${{ github.workspace }}/src/hades_extensions"

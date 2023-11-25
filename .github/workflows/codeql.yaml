@@ -48,7 +48,7 @@ jobs:
         uses: lukka/run-cmake@v10.7
         with:
           cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
-          configurePreset: "lint"
+          configurePreset: "Lint"
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2
         with:
