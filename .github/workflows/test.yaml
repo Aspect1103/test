@@ -49,12 +49,12 @@ jobs:
     #    uses: ilammy/msvc-dev-cmd@v1.12.1
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
-      - name: f
-        run: ls
       - name: Configure and build CMake
         uses: lukka/run-cmake@v10.7
         with:
           cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
           configurePreset: "Coverage"
+      - name: f
+        run: ls ${{ github.workspace }}/src/hades_extensions/build-coverage/tests
       - name: Run CTest
         run: ctest --output-on-failure --test-dir ${{ github.workspace }}/src/hades_extensions/build-coverage/tests
