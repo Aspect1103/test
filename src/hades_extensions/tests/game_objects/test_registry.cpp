@@ -136,7 +136,8 @@ TEST_F(RegistryFixture, TestRegistryGameObjectDuplicateComponents) {
 /// Test that passing the same component to multiple game objects works correctly.
 TEST_F(RegistryFixture, TestRegistryGameObjectSameComponent) {
   const std::vector<int> test_list{10};
-  const std::shared_ptr<TestGameObjectComponentTwo> component_one{std::make_shared<TestGameObjectComponentTwo>(test_list)};
+  const std::shared_ptr<TestGameObjectComponentTwo> component_one{
+      std::make_shared<TestGameObjectComponentTwo>(test_list)};
   registry.create_game_object({component_one});
   registry.create_game_object({component_one});
   registry.get_component<TestGameObjectComponentTwo>(0)->test_list[0] = 20;

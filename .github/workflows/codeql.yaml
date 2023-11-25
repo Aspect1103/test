@@ -39,7 +39,7 @@ jobs:
         if: matrix.language == 'python'
         run: poetry install --no-interaction
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2.15.3
+        uses: github/codeql-action/init@v2.22.8
         with:
           languages: ${{ matrix.language }}
           setup-python-dependencies: false
@@ -50,6 +50,6 @@ jobs:
           cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
           configurePreset: "Debug"
       - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v2.15.3
+        uses: github/codeql-action/analyze@v2.22.8
         with:
           category: "/language:${{ matrix.language }}"
