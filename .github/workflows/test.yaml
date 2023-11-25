@@ -55,6 +55,6 @@ jobs:
           cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
           configurePreset: "Coverage"
       - name: f
-        run: ls ${{ github.workspace }}/src/hades_extensions/build-coverage/tests
+        run: ls ${{ github.workspace }}/src/hades_extensions/build-coverage
       - name: Run CTest
         run: ctest --output-on-failure --test-dir ${{ github.workspace }}/src/hades_extensions/build-coverage/tests
