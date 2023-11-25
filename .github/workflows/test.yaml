@@ -39,13 +39,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [ubuntu-latest, windows-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
-      - name: Set up MSVC
-        if: matrix.os == 'windows-latest'
-        uses: ilammy/msvc-dev-cmd@v1.12.1
+   #   - name: Set up MSVC
+    #    if: matrix.os == 'windows-latest'
+    #    uses: ilammy/msvc-dev-cmd@v1.12.1
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
       - name: Configure and build CMake
