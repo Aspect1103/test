@@ -43,11 +43,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
+        # TODO: Is this needed?
    #   - name: Set up MSVC
     #    if: matrix.os == 'windows-latest'
     #    uses: ilammy/msvc-dev-cmd@v1.12.1
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
+      - name: f
+        run: ls
       - name: Configure and build CMake
         uses: lukka/run-cmake@v10.7
         with:
