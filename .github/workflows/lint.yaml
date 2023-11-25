@@ -24,4 +24,4 @@ jobs:
       - name: Run clang-format
         run: |
           cd "${{ github.workspace }}/src/hades_extensions"
-          clang-format -i include/* src/* tests/*
+          clang-format -i **/*.hpp **/*.cpp

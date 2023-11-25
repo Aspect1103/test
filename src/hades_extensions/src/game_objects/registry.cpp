@@ -17,7 +17,7 @@ auto Registry::create_game_object(const std::vector<std::shared_ptr<ComponentBas
   for (const auto &component : components) {
     // Check if the component already exists in the registry
     [[maybe_unused]] const auto &obj{*component};
-    if (has_component(next_game_object_id_, typeid(obj))) {
+    if (has_component(next_game_object_id_, typeid( obj))) {
       continue;
     }
 

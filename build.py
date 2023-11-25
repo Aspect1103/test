@@ -48,7 +48,6 @@ class CMakeBuild(build_ext):
         build_temp.mkdir(parents=True, exist_ok=True)
 
         # Compile and build the CMake extension
-        # TODO: Add CMake presets here
         subprocess.run(
             " ".join(
                 [
@@ -61,7 +60,7 @@ class CMakeBuild(build_ext):
             cwd=build_temp,
             check=True,
         )
-        subprocess.run("cmake --build . --config Release", cwd=build_temp, check=True)
+        subprocess.run("cmake --build . --preset Release", cwd=build_temp, check=True)
 
 
 def executable() -> None:
