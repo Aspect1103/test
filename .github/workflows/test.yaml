@@ -29,7 +29,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install libegl1
       - name: f
-        run: ls
+        run: ls src/hades_extensions
       - name: Run Tox
         run: tox
       - name: Upload coverage report

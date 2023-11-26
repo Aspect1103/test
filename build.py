@@ -56,7 +56,7 @@ class CMakeBuild(build_ext):
             ),
             check=True,
         )
-        subprocess.run("cmake --build src/hades_extensions/build-release", check=True)
+        #subprocess.run("cmake --build src/hades_extensions/build-release", check=True)
 
 
 def executable() -> None:
