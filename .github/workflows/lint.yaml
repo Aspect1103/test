@@ -22,5 +22,5 @@ jobs:
       - name: Run clang-tidy and clang-format
         working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: |
-          clang-tidy .
+          clang-tidy -p build-debug/compile_commands.json
           find . -regex '.*\.\(cpp\|hpp\)' -exec clang-format -style=file -i {} \;

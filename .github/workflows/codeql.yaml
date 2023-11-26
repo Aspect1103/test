@@ -43,7 +43,7 @@ jobs:
       - name: Install Python dependencies
         if: matrix.language == 'python'
         run: poetry install --no-interaction
-      - name: Configure and build CMake
+      - name: Configure CMake
         if: matrix.language == 'cpp'
         working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: cmake --preset Debug
