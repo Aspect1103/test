@@ -36,14 +36,18 @@ class CMakeBuild(build_ext):
             ext: The extension to build.
         """
         # Determine the current directory to build the CMake extension with
+        print("HERE")
         current_dir = Path(__file__).parent
 
         # Determine where the extension should be transferred to after it has been
         # compiled
+        print("HERE")
         build_dir = current_dir.joinpath(self.get_ext_fullpath(ext.name)).parent
+        print("HERE")
         build_dir.mkdir(parents=True, exist_ok=True)
 
         # Compile and build the CMake extension
+        print("HERE")
         subprocess.run(
             " ".join(
                 [
@@ -56,7 +60,9 @@ class CMakeBuild(build_ext):
             ),
             check=True,
         )
-        #subprocess.run("cmake --build src/hades_extensions/build-release", check=True)
+        print("HERE")
+        subprocess.run("cmake --build src/hades_extensions/build-release", check=True)
+        print("HERE")
 
 
 def executable() -> None:
