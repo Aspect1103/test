@@ -45,10 +45,10 @@ jobs:
           setup-python-dependencies: false
       - name: Configure and build CMake
         if: matrix.language == 'cpp'
+        run: |
+          cmake -S "${{ github.workspace }}/src/hades_extensions" --preset Debug
+          cmake --build "${{ github.workspace }}/src/hades_extensions/build-debug"
         uses: lukka/run-cmake@v10.7
-        with:
-          cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
-          configurePreset: "Debug"
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2.22.8
         with:

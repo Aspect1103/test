@@ -16,13 +16,11 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1.12.1
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
-        # TODO: Get static analysers and clang-format to run
       - name: Configure and build CMake
-        uses: lukka/run-cmake@v10.7
-        with:
-          cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
-          configurePreset: "Lint"
-      - name: Run clang-format
+        working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: |
-          cd "${{ github.workspace }}/src/hades_extensions"
-          clang-format -i include/*.hpp src/*.cpp tests/*.cpp
+          cmake --preset Lint
+          cmake --build build-lint
+      - name: Run clang-format
+        working-directory: "${{ github.workspace }}/src/hades_extensions"
+        run: find . -regex '.*\.\(cpp\|hpp\)' -exec clang-format -style=file -i {} \;
