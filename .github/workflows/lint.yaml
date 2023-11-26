@@ -18,8 +18,10 @@ jobs:
         working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: cmake --preset Debug
       - name: Run clang-tidy
-        working-directory: "${{ github.workspace }}/src/hades_extensions"
-        run: clang-tidy -p ./build-debug/compile_commands.json --quiet ./**/*.cpp ./**/*.hpp
+        uses: HorstBaerbel/action-clang-tidy@1.2
+        with:
+          scandir: "${{ github.workspace }}/src/hades_extensions"
+          build-dir: "${{ github.workspace }}/src/hades_extensions/build-debug"
   cppcheck:
     runs-on: ubuntu-latest
     steps:
