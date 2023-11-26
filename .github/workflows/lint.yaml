@@ -23,6 +23,8 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
       - name: Run clang-tidy
         working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: clang-tidy -p build-debug/compile_commands.json ./**/*.cpp ./**/*.hpp
@@ -30,6 +32,8 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
       - name: Run cppcheck
         working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: cppcheck --enable=all --suppress=missingInclude --suppress=missingIncludeSyste --quiet ./**/*.cpp ./**/*.hpp
@@ -37,6 +41,8 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
       - name: Run clang-format
         working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: find . -regex '.*\.\(cpp\|hpp\)' -exec clang-format -style=file -i {} \;
