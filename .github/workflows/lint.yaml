@@ -37,8 +37,8 @@ jobs:
       - name: Run cppcheck
         working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: |
-          sudo apt-get install cppcheck
-          cppcheck --enable=all --suppress=missingInclude --suppress=missingIncludeSyste --quiet ./**/*.cpp ./**/*.hpp
+          sudo apt-get install -y -q cppcheck
+          cppcheck --enable=all --suppress=missingInclude --suppress=missingIncludeSystem --quiet ./**/*.cpp ./**/*.hpp
   clang-format:
     needs: setup
     runs-on: ubuntu-latest
