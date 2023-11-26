@@ -48,6 +48,10 @@ class CMakeBuild(build_ext):
 
         # Compile and build the CMake extension
         print("HERE")
+        print(Path(str(current_dir.joinpath(ext.sources[0]))).exists())
+        print("HERE")
+        print(build_dir.exists())
+        print("HERE")
         subprocess.run(
             " ".join(
                 [
