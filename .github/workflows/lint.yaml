@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  cpp:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,15 +19,24 @@ jobs:
       - name: Configure CMake
         working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: cmake --preset Debug
+  clang-tidy:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Run clang-tidy
-        continue-on-error: true
         working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: clang-tidy -p build-debug/compile_commands.json ./**/*.cpp ./**/*.hpp
+  cppcheck:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Run cppcheck
-        continue-on-error: true
         working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: cppcheck --enable=all --suppress=missingInclude --suppress=missingIncludeSyste --quiet ./**/*.cpp ./**/*.hpp
+  clang-format:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
       - name: Run clang-format
-        continue-on-error: true
         working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: find . -regex '.*\.\(cpp\|hpp\)' -exec clang-format -style=file -i {} \;
