@@ -11,22 +11,22 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4.1.1
-      - name: Set up Python 3.10
+      - name: Set up Python 3.11
         uses: actions/setup-python@v4.7.1
         with:
-          python-version: "3.10"
+          python-version: "3.11"
       - name: Install Poetry
         uses: snok/install-poetry@v1.3.4
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: poetry install --no-interaction
-      - name: Build game
+      - name: Build the game
         run: poetry run python -m build --executable
-      - name: Release
+      - name: Upload the release
         uses: svenstaro/upload-release-action@v2.7.0
         with:
           file: hades.zip
