@@ -55,4 +55,5 @@ jobs:
           cmake --preset Coverage
           cmake --build build-coverage
       - name: Run CTest
-        uses: threeal/ctest-action@main
+        working-directory: "${{ github.workspace }}/src/hades_extensions"
+        run: ctest --output-on-failure --test-dir build-coverage
