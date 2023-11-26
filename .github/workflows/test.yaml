@@ -17,7 +17,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4.1.1
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4.7.1
@@ -41,7 +41,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4.1.1
         # TODO: Is this needed?
    #   - name: Set up MSVC
