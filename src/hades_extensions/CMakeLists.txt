@@ -17,6 +17,11 @@ set(CPP_LIB hades_extensions_lib)
 set(TEST_MODULE hades_extensions_tests)
 project(${PY_MODULE} LANGUAGES CXX)
 
+# Check if the tests have been disabled
+if (NOT DO_TESTS)
+    message(STATUS "Tests disabled (DO_TESTS is not set)")
+endif ()
+
 # Enable coverage if supported by the compiler and enabled by the user
 if (ENABLE_COVERAGE)
     if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
