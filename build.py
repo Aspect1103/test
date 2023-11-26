@@ -44,15 +44,14 @@ class CMakeBuild(build_ext):
         build_dir.mkdir(parents=True, exist_ok=True)
 
         # Compile and build the CMake extension
-        subprocess.run("cmake --version", check=True)
         subprocess.run(
             " ".join(
                 [
                     "cmake",
                     str(current_dir.joinpath(ext.sources[0])),
                     "--preset Release",
-                    f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE={build_dir}",
                     "-DDO_TESTS=OFF",
+                    f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE={build_dir}",
                 ],
             ),
             check=True,
