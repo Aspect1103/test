@@ -21,7 +21,7 @@ jobs:
         uses: HorstBaerbel/action-clang-tidy@1.2
         with:
           scandir: "${{ github.workspace }}/src/hades_extensions"
-          build-dir: "${{ github.workspace }}/src/hades_extensions/build-debug"
+          builddir: "${{ github.workspace }}/src/hades_extensions/build-debug"
   cppcheck:
     runs-on: ubuntu-latest
     steps:
