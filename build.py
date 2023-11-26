@@ -44,7 +44,6 @@ class CMakeBuild(build_ext):
         build_dir.mkdir(parents=True, exist_ok=True)
 
         # Compile and build the CMake extension
-        subprocess.run("cmake --version", check=True)
         subprocess.run(
             " ".join(
                 [

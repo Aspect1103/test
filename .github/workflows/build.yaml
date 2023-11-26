@@ -25,7 +25,7 @@ jobs:
       - name: Install Python dependencies
         run: poetry install --no-interaction
       - name: Build the game
-        run: poetry run python -m build --executable
+        run: python -m build --executable
       - name: Upload the release
         uses: svenstaro/upload-release-action@v2.7.0
         with:

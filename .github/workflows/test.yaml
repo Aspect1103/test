@@ -23,13 +23,13 @@ jobs:
         uses: actions/setup-python@v4.7.1
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+      - name: Set up CMake
+        uses: lukka/get-cmake@v3.27.7
+      - name: Install Python dependencies
         run: pip install tox tox-gh-actions
       - name: Install EGL on Linux for headless Arcade
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install libegl1
-      - name: f
-        run: ls src/hades_extensions
       - name: Run Tox
         run: tox
       - name: Upload coverage report
