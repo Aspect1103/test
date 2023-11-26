@@ -31,15 +31,6 @@
       "description": "Coverage build",
       "inherits": "Debug",
       "name": "Coverage"
-    },
-    {
-      "binaryDir": "${sourceDir}/build-lint",
-      "cacheVariables": {
-        "ENABLE_STATIC_ANALYSIS": "ON"
-      },
-      "description": "Lint build",
-      "inherits": "Debug",
-      "name": "Lint"
     }
   ],
   "version": 3

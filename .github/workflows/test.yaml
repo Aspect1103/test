@@ -50,14 +50,9 @@ jobs:
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
       - name: Configure and build CMake
-        uses: lukka/run-cmake@v10.7
-        with:
-          cmakeListsTxtPath: "${{ github.workspace }}/src/hades_extensions/CMakeLists.txt"
-          configurePreset: "Coverage"
-      - name: f
+        working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: |
-          ls ${{ github.workspace }}/src/hades_extensions/build-coverage
-          ls ${{ github.workspace }}/src/hades_extensions/build-coverage/tests
-          ls ${{ github.workspace }}/src/hades_extensions/build-coverage/bin
+          cmake --preset Coverage
+          cmake --build build-coverage
       - name: Run CTest
         uses: threeal/ctest-action@main

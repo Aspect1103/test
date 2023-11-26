@@ -30,30 +30,6 @@ else ()
     message(STATUS "Coverage disabled (ENABLE_COVERAGE is not set)")
 endif ()
 
-# Enable static analysis if enabled by the user
-if (ENABLE_STATIC_ANALYSIS)
-    # Enable clang-tidy if found
-    find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
-    if (CLANG_TIDY_EXE)
-        message(STATUS "Found clang-tidy: ${CLANG_TIDY_EXE}")
-        set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
-    else ()
-        message(STATUS "No clang-tidy found")
-    endif ()
-
-    # Enable cppcheck if found
-    find_program(CPPCHECK_EXE NAMES "cppcheck")
-    if (CPPCHECK_EXE)
-        message(STATUS "Found cppcheck: ${CPPCHECK_EXE}")
-        set(CMAKE_CXX_CPPCHECK "${CPPCHECK_EXE}")
-        list(APPEND CMAKE_CXX_CPPCHECK "--enable=all" "--suppress=missingInclude" "--suppress=missingIncludeSystem")
-    else ()
-        message(STATUS "No cppcheck found")
-    endif ()
-else ()
-    message(STATUS "Static analysis disabled (ENABLE_STATIC_ANALYSIS is not set)")
-endif ()
-
 # Add the subdirectories for the different parts of the project
 include(FetchContent)
 add_subdirectory(src)
