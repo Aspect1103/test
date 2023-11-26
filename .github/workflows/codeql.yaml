@@ -11,16 +11,17 @@ on:
 jobs:
   CodeQL:
     runs-on: ubuntu-latest
-    permissions:
-      security-events: write
-      actions: read
-      contents: read
     strategy:
       matrix:
         language: ["python", "cpp"]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2.22.8
+        with:
+          languages: ${{ matrix.language }}
+          setup-python-dependencies: false
       - name: Set up Python 3.11
         if: matrix.language == 'python'
         uses: actions/setup-python@v4.7.1
@@ -35,20 +36,13 @@ jobs:
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
-      - name: Install dependencies
+      - name: Install Python dependencies
         if: matrix.language == 'python'
         run: poetry install --no-interaction
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2.22.8
-        with:
-          languages: ${{ matrix.language }}
-          setup-python-dependencies: false
       - name: Configure and build CMake
         if: matrix.language == 'cpp'
         working-directory: "${{ github.workspace }}/src/hades_extensions"
-        run: |
-          cmake --preset Debug
-          cmake --build build-debug
+        run: cmake --preset Debug
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2.22.8
         with:
