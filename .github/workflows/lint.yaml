@@ -48,5 +48,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
       - name: Run clang-format
-        working-directory: "${{ github.workspace }}/src/hades_extensions"
         uses: jidicula/clang-format-action@v4.11.0
+        with:
+          check-path: "${{ github.workspace }}/src/hades_extensions"
