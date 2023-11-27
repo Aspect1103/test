@@ -248,8 +248,8 @@ allowlist_externals = cmake
 commands =
     python -m build -c
     pytest --cov-append
-deps = pytest-cov, cmake
-passenv = *
+deps = pytest-cov
+passenv = PATH
 
 [testenv:clean]
 commands = coverage erase
