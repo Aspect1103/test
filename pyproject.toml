@@ -248,6 +248,8 @@ commands =
     python -m build -c
     pytest --cov-append
 deps = pytest-cov
+setenv =
+    PATH = {env:PATH}
 
 [testenv:clean]
 commands = coverage erase
