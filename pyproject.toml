@@ -245,7 +245,8 @@ python =
     3.11: clean, py311, report
 
 [testenv]
-allowlist_externals = cmake
+whitelist_externals = whereis
+allowlist_externals = whereis
 commands =
     python -m build -c
     pytest --cov-append
