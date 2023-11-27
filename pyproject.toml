@@ -245,7 +245,7 @@ python =
 
 [testenv]
 commands =
-    pip install cmake
+    echo $PATH
     python -m build -c
     pytest --cov-append
 deps = pytest-cov
