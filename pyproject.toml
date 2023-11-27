@@ -237,7 +237,6 @@ convention = "google"
 legacy_tox_ini = """
 [tox]
 envlist = clean, py310, py311, report
-passenv = *
 
 [gh-actions]
 python =
