@@ -244,8 +244,8 @@ python =
     3.11: clean, py311, report
 
 [testenv]
-allowlist_externals = cmake
 commands =
+    pip install cmake
     python -m build -c
     pytest --cov-append
 deps = pytest-cov
