@@ -247,6 +247,7 @@ python =
 allowlist_externals = echo
 commands =
     echo $PATH
+    cmake --version
     python -m build -c
     pytest --cov-append
 deps = pytest-cov
