@@ -244,7 +244,7 @@ python =
     3.11: clean, py311, report
 
 [testenv]
-allowlist_externals = echo
+allowlist_externals = cmake
 commands =
     echo $PATH
     cmake --version
