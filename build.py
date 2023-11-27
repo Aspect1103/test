@@ -44,19 +44,14 @@ class CMakeBuild(build_ext):
         build_dir.mkdir(parents=True, exist_ok=True)
 
         # Compile and build the CMake extension
-        subprocess.run(
-            " ".join(
-                [
-                    "cmake",
-                    str(current_dir.joinpath(ext.sources[0])),
-                    "--preset Release",
-                    "-DDO_TESTS=OFF",
-                    f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE={build_dir}",
-                ],
-            ),
-            check=True,
-            shell=True,
-        )
+        subprocess.run(["cmake", "--version"], check=True)
+        subprocess.run([
+            "cmake",
+            str(current_dir.joinpath(ext.sources[0])),
+            "--preset Release",
+            "-DDO_TESTS=OFF",
+            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE={build_dir}",
+        ], check=True)
         subprocess.run(
             "cmake --build src/hades_extensions/build-release",
             check=True,
