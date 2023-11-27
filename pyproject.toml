@@ -246,7 +246,6 @@ python =
 [testenv]
 allowlist_externals = cmake
 commands =
-    echo $PATH
     cmake --version
     python -m build -c
     pytest --cov-append
