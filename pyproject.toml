@@ -246,10 +246,9 @@ python =
 [testenv]
 allowlist_externals = cmake
 commands =
-    cmake --version
     python -m build -c
     pytest --cov-append
-deps = pytest-cov
+deps = pytest-cov, cmake
 passenv = *
 
 [testenv:clean]
