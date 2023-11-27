@@ -237,7 +237,7 @@ convention = "google"
 legacy_tox_ini = """
 [tox]
 envlist = clean, py310, py311, report
-passenv = *
+passenv = PATH
 
 [gh-actions]
 python =
@@ -250,9 +250,7 @@ commands =
     python -m build -c
     pytest --cov-append
 deps = pytest-cov
-passenv = *
-setenv =
-    PATH = {env:PATH}
+passenv = PATH
 
 [testenv:clean]
 commands = coverage erase
