@@ -230,12 +230,17 @@ TEST_F(SteeringMovementFixture, TestSteeringMovementSystemCalculateForceArrive) 
   ASSERT_EQ(get_steering_movement_system()->calculate_force(2), Vec2d(-70.71067811865476, -70.71067811865476));
 }
 
+#include <iostream>
+
 /// Test if the correct force is calculated for the evade behaviour.
 TEST_F(SteeringMovementFixture, TestSteeringMovementSystemCalculateForceEvade) {
   create_steering_movement_component({{SteeringMovementState::Target, {SteeringBehaviours::Evade}}});
   registry.get_kinematic_object(0)->position = {100, 100};
   registry.get_kinematic_object(0)->velocity = {-50, 0};
-  ASSERT_EQ(get_steering_movement_system()->calculate_force(2), Vec2d(-54.28888213891886, -83.98045770360257));
+  auto res = get_steering_movement_system()->calculate_force(2);
+  std::cout << res.x << " " << res.y << std::endl;
+  ASSERT_DOUBLE_EQ(res.x, -54.28888213891886);
+  ASSERT_DOUBLE_EQ(res.y, -83.98045770360257);
 }
 
 /// Test if the correct force is calculated for the flee behaviour.
