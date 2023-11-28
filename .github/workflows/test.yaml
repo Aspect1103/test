@@ -61,4 +61,4 @@ jobs:
         uses: coverallsapp/github-action@v2.2.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          file: "${{ github.workspace }}/src/hades_extensions/coveralls.json"
+          file: "${{ github.workspace }}/src/hades_extensions/coverage.json"
