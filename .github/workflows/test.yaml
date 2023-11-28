@@ -32,7 +32,7 @@ jobs:
       - name: Upload coverage report
         uses: coverallsapp/github-action@v2.2.3
         with:
-          file: ./coverage.lcov
+          file: coverage.lcov
           flag-name: run-python-${{ matrix.os }}-${{ matrix.python-version }}
           parallel: true
   cpp:
