@@ -13,9 +13,6 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         python-version: ["3.10", "3.11"]
-    defaults:
-      run:
-        shell: bash
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
@@ -42,7 +39,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest]
+        os: [ubuntu-latest, windows-latest]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
@@ -67,7 +64,7 @@ jobs:
           parallel: true
   finish:
     runs-on: ubuntu-latest
-    needs: cpp
+    needs: [python, cpp]
     steps:
       - name: Upload coverage report
         uses: coverallsapp/github-action@v2.2.3
