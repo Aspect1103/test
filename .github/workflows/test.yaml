@@ -52,17 +52,14 @@ jobs:
         run: |
           cmake --preset Coverage
           cmake --build build-coverage
-      - name: Run CTest
-        working-directory: "${{ github.workspace }}/src/hades_extensions/build-coverage"
-        run: ctest --output-on-failure --no-tests=error --test-dir tests
-      - name: Upload coverage report
-        if: matrix.os == 'ubuntu-latest'
+      - name: Run CTest and generate the coverage report
         working-directory: "${{ github.workspace }}/src/hades_extensions/build-coverage"
         run: |
+          ctest --output-on-failure --no-tests=error --test-dir tests
           pip install gcovr
           gcovr --exclude build-coverage --exclude tests --exclude src/binding.cpp --html-details output.html
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
-          path: output.html
+          path: src/hades_extensions/build-coverage/output.html
