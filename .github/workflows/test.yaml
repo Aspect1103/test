@@ -45,10 +45,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
-        # TODO: Is this needed?
-   #   - name: Set up MSVC
-    #    if: matrix.os == 'windows-latest'
-    #    uses: ilammy/msvc-dev-cmd@v1.12.1
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
       - name: Configure and build CMake
@@ -59,3 +55,11 @@ jobs:
       - name: Run CTest
         working-directory: "${{ github.workspace }}/src/hades_extensions/build-coverage"
         run: ctest --output-on-failure --no-tests=error --test-dir tests
+      - name: Upload coverage report
+        if: matrix.os == 'ubuntu-latest'
+        run: gcovr --exclude build --exclude test --html-details output.html
+      - name: Upload coverage report to github
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage-report
+          path: output.html

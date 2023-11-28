@@ -81,6 +81,7 @@ class SteeringMovementFixture : public testing::Test {
 };
 
 // ----- FUNCTIONS -----------------------------
+// todo: i do not like this. maybe look at it with assert_throw_message
 /// Test if two vectors are equal within a small margin of error.
 ///
 /// @param expected - The expected vector.
