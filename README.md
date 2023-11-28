@@ -13,7 +13,7 @@ Arcade.
 ### Pre-compiled releases (preferred)
 
 The preferred and easiest way to play Hades is by using the pre-compiled
-releases on GitHub. rTo play the game this way, follow these steps:
+releases on GitHub. To play the game this way, follow these steps:
 
 1. Download and extract the latest release from [here](https://github.com/Aspect1103/Hades/releases).
 2. Run the `window.exe` file to play the game.
