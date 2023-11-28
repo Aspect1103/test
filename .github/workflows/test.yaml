@@ -35,7 +35,6 @@ jobs:
       - name: Upload coverage report
         uses: coverallsapp/github-action@v2.2.3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           file: ./coverage.lcov
           flag-name: run-python-${{ matrix.os }}-${{ matrix.python-version }}
           parallel: true
@@ -63,7 +62,6 @@ jobs:
       - name: Upload coverage report
         uses: coverallsapp/github-action@v2.2.3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ github.workspace }}/src/hades_extensions/coverage.json
           flag-name: run-cpp-${{ matrix.os }}
           parallel: true
@@ -74,5 +72,4 @@ jobs:
       - name: Upload coverage report
         uses: coverallsapp/github-action@v2.2.3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true
