@@ -32,11 +32,6 @@ jobs:
         run: sudo apt-get update && sudo apt-get install libegl1
       - name: Run Tox
         run: tox
-      - name: Upload coverage report
-        uses: coverallsapp/github-action@v2.2.3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          parallel: true
   cpp:
     runs-on: ${{ matrix.os }}
     strategy:
