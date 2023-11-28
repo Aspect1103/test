@@ -59,7 +59,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           pip install gcovr
-          gcovr --exclude build --exclude test --html-details output.html
+          gcovr --exclude build-coverage --exclude tests --exclude src/binding.cpp --html-details output.html
       - name: Upload coverage report to github
         uses: actions/upload-artifact@v2
         with:
