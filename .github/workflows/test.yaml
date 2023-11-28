@@ -56,15 +56,6 @@ jobs:
         run: |
           cmake --preset Coverage
           cmake --build build-coverage
-      - name: f
-        run: |
-          ls src/hades_extensions/build-coverage
-          echo "hello"
-          ls src/hades_extensions/build-coverage/src
-          echo "hello"
-          ls src/hades_extensions/build-coverage/tests
-          echo "hello"
-          cat src/hades_extensions/build-coverage/tests/CTestTestfile.cmake
       - name: Run CTest
-        working-directory: "${{ github.workspace }}/src/hades_extensions"
-        run: ctest --output-on-failure --no-tests=error --test-dir build-coverage/tests
+        working-directory: "${{ github.workspace }}/src/hades_extensions/build-coverage"
+        run: ctest --output-on-failure --no-tests=error --test-dir tests
