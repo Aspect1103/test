@@ -62,4 +62,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: coverage-report
-          path: src/hades_extensions/build-coverage/output.html
+          path: src/hades_extensions/output.html
