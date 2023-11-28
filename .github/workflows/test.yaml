@@ -7,7 +7,6 @@ on:
   pull_request:
 
 jobs:
-
   cpp:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -35,7 +34,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel: true
   coveralls:
-    needs: [cpp]
+    needs: cpp
     runs-on: ubuntu-latest
     steps:
       - name: Upload coverage reports
