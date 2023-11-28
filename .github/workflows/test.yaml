@@ -53,9 +53,9 @@ jobs:
           cmake --preset Coverage
           cmake --build build-coverage
       - name: Run CTest and generate the coverage report
-        working-directory: "${{ github.workspace }}/src/hades_extensions/build-coverage"
+        working-directory: "${{ github.workspace }}/src/hades_extensions"
         run: |
-          ctest --output-on-failure --no-tests=error --test-dir tests
+          ctest --output-on-failure --no-tests=error --test-dir build-coverage/tests
           pip install gcovr
           gcovr --exclude build-coverage --exclude tests --exclude src/binding.cpp --html-details output.html
       - name: Upload coverage report to github
