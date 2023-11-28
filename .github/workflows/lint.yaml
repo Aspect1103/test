@@ -15,10 +15,10 @@ jobs:
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
       - name: Configure CMake
-        working-directory: "${{ github.workspace }}/src/hades_extensions"
+        working-directory: ${{ github.workspace }}/src/hades_extensions
         run: cmake --preset Debug
       - name: Run clang-tidy
-        working-directory: "${{ github.workspace }}/src/hades_extensions"
+        working-directory: ${{ github.workspace }}/src/hades_extensions
         run: clang-tidy -p ./build-debug/compile_commands.json --quiet ./**/*.cpp ./**/*.hpp
   cppcheck:
     runs-on: ubuntu-latest
@@ -28,7 +28,7 @@ jobs:
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
       - name: Run cppcheck
-        working-directory: "${{ github.workspace }}/src/hades_extensions"
+        working-directory: ${{ github.workspace }}/src/hades_extensions
         run: |
           sudo apt-get install -y cppcheck
           cppcheck --enable=all --suppress=missingInclude --suppress=unknownMacro --quiet --error-exitcode=10 ./include/ ./src/ ./tests/
@@ -42,5 +42,5 @@ jobs:
       - name: Run clang-format
         uses: jidicula/clang-format-action@v4.11.0
         with:
-          check-path: "${{ github.workspace }}/src/hades_extensions"
-          exclude-regex: "build-debug"
+          check-path: ${{ github.workspace }}/src/hades_extensions
+          exclude-regex: build-debug
