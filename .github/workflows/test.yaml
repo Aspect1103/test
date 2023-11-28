@@ -36,7 +36,7 @@ jobs:
         uses: coverallsapp/github-action@v2.2.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path-to-lcov: ./coverage.lcov
+          parallel: true
   cpp:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -57,9 +57,17 @@ jobs:
         run: |
           ctest --output-on-failure --no-tests=error --test-dir build-coverage/tests
           pip install gcovr
-          gcovr --exclude build-coverage --exclude tests --exclude src/binding.cpp --html-details output.html
-      - name: Upload coverage report to github
-        uses: actions/upload-artifact@v2
+          gcovr --exclude build-coverage --exclude tests --exclude src/binding.cpp --coveralls
+      - name: Upload coverage report
+        uses: coverallsapp/github-action@v2.2.3
         with:
-          name: coverage-report
-          path: src/hades_extensions/output.html
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel: true
+  coveralls:
+    needs: [python, cpp]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload coverage reports
+        uses: coverallsapp/github-action@v2.2.3
+        with:
+          parallel-finished: true
