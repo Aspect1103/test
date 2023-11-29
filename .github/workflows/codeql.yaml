@@ -11,6 +11,8 @@ on:
 jobs:
   CodeQL:
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
     strategy:
       matrix:
         language: [python, cpp]
