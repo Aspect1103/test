@@ -31,4 +31,5 @@ jobs:
       - name: Upload the release
         uses: svenstaro/upload-release-action@2.7.0
         with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: hades.zip
