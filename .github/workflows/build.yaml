@@ -7,6 +7,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
@@ -15,7 +18,7 @@ jobs:
         with:
           python-version: 3.11
       - name: Install Poetry
-        uses: snok/install-poetry@v1
+        uses: snok/install-poetry@v1.3.4
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
