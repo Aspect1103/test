@@ -28,10 +28,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install libegl1
       - name: Run Tox
-        run: |
-          # echo the runner_os variable
-          echo "runner_os: ${{ runner.os }}"
-          tox
+        run: tox
       - name: Upload coverage report
         uses: coverallsapp/github-action@v2.2.3
         with:

@@ -21,7 +21,7 @@ struct Neighbour {
 
 // ----- CONSTANTS ------------------------------
 // Represents the north, south, east, west, north-east, north-west, south-east and south-west directions on a compass
-constexpr std::array<Position, 8> INTERCARDINAL_OFFSETS{Position{ -1, -1}, Position{0, -1}, Position{1, -1},
+constexpr std::array<Position, 8> INTERCARDINAL_OFFSETS{Position{-1, -1}, Position{0, -1}, Position{1, -1},
                                                         Position{-1, 0},  Position{1, 0},  Position{-1, 1},
                                                         Position{0, 1},   Position{1, 1}};
 

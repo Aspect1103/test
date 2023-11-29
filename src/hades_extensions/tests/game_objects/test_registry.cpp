@@ -21,7 +21,7 @@ struct TestGameObjectComponentTwo : public ComponentBase {
 /// Represents a test system useful for testing.
 struct TestSystem : public SystemBase {
   /// Whether the system has been called or not.
-  mutable bool called{false };
+  mutable bool called{false};
 
   /// Initialise the system.
   ///

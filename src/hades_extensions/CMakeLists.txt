@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(ENABLE_COVERAGE OFF CACHE BOOL "Enable coverage reporting for GCC/Clang")
-set(ENABLE_STATIC_ANALYSIS OFF CACHE BOOL "Enable static analysis using clang-tidy and cppcheck")
+set(ENABLE_STATIC_ANALYSIS OFF CACHE BOOL "Enable static analysis using clang-tidy")
 set(DO_TESTS ON CACHE BOOL "Enable testing")
 
 # Define the module names and initialise the project
