@@ -37,8 +37,6 @@ struct Position {
   /// The default constructor.
   Position() = default;
 
-  // todo: idk about this, maybe make other constructors constexpr too?
-
   /// Initialise the object.
   ///
   /// @param x - The x position of the position.
