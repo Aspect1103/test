@@ -23,7 +23,7 @@ enum class TileType {
 
 // ----- STRUCTURES ------------------------------
 /// Represents a 2D position.
-struct Position {  // NOLINT(clang-diagnostic-error)
+struct Position {
   inline auto operator==(const Position &position) const -> bool { return x == position.x && y == position.y; }
 
   inline auto operator!=(const Position &position) const -> bool { return x != position.x || y != position.y; }
@@ -33,6 +33,12 @@ struct Position {  // NOLINT(clang-diagnostic-error)
   inline auto operator-(const Position &position) const -> Position {
     return {std::abs(x - position.x), std::abs(y - position.y)};
   }
+
+  /// Initialise the object.
+  ///
+  /// @param x - The x position of the position.
+  /// @param y - The y position of the position.
+  Position(const int x, const int y) : x(x), y(y) {}
 
   /// The x position of the position.
   int x;
