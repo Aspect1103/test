@@ -45,17 +45,17 @@ class CMakeBuild(build_ext):
 
         # Compile and build the CMake extension
         subprocess.run(
-            " ".join([
+            [
                 "cmake",
                 str(current_dir.joinpath(ext.sources[0])),
                 "--preset Release",
                 "-DDO_TESTS=OFF",
                 f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE={build_dir}",
-            ]),
+            ],
             check=True,
         )
         subprocess.run(
-            "cmake --build src/hades_extensions/build-release",
+            ["cmake", "--build", "src/hades_extensions/build-release"],
             check=True,
         )
 
@@ -106,7 +106,7 @@ def cpp() -> None:
             cmdclass={"build_ext": CMakeBuild},
         ).dist_files[0][2],
     )
-    subprocess.run(f"pip install --force-reinstall {result_path}", check=True)
+    subprocess.run(["pip", "install", "--force-reinstall", result_path], check=True)
 
 
 if __name__ == "__main__":
