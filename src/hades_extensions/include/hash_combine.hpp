@@ -1,6 +1,10 @@
 // Ensure this file is only included once
 #pragma once
 
+// Std headers
+#include <functional>
+#include <cstddef>
+
 // ----- FUNCTIONS ------------------------------
 /// Allows multiple hashes to be combined for a struct
 ///
