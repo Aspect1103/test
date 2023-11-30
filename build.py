@@ -106,6 +106,9 @@ def cpp() -> None:
             cmdclass={"build_ext": CMakeBuild},
         ).dist_files[0][2],
     )
+    subprocess.run("ls -l", check=True)
+    subprocess.run("ls -l dist", check=True)
+    subprocess.run("ls -l build", check=True)
     subprocess.run(f"pip install --force-reinstall {result_path}", check=True)
 
 
