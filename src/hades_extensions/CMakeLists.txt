@@ -47,6 +47,12 @@ add_subdirectory(
         ${pybind11_source_BINARY_DIR}
 )
 
+# Declare an interface library only for tests
+if(DO_TESTS)
+    add_library(test_includes INTERFACE)
+    target_include_directories(test_includes INTERFACE ${CMAKE_SOURCE_DIR}/include)
+endif()
+
 # Fetch the GoogleTest repository and initialise it
 FetchContent_Declare(
         googletest
