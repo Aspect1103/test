@@ -23,7 +23,6 @@ add_executable(${TEST_MODULE}
         ${CMAKE_SOURCE_DIR}/tests/generation/test_map.cpp
         ${CMAKE_SOURCE_DIR}/tests/generation/test_primitives.cpp
 )
-target_include_directories(${TEST_MODULE} PRIVATE ${googletest_SOURCE_DIR}/googletest/include)
 target_link_libraries(
         ${TEST_MODULE}
         gtest_main
