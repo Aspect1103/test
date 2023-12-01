@@ -1,6 +1,6 @@
 // Local headers
+#include "../macros.hpp"
 #include "game_objects/steering.hpp"
-#include "macros.hpp"
 
 // ----- TESTS ------------------------------
 /// Test that adding two vectors produce the correct result.

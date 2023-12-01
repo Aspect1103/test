@@ -1,6 +1,6 @@
 // Local headers
+#include "../macros.hpp"
 #include "generation/primitives.hpp"
-#include "macros.hpp"
 
 // ----- FIXTURES ------------------------------
 /// Implements the fixture for the generation/primitives.hpp tests.

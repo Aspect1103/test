@@ -1,6 +1,6 @@
 // Local headers
+#include "../macros.hpp"
 #include "game_objects/registry.hpp"
-#include "macros.hpp"
 
 // ----- COMPONENTS ------------------------------
 /// Represents a game object component useful for testing.

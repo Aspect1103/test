@@ -1,7 +1,7 @@
 // Local headers
+#include "../../macros.hpp"
 #include "game_objects/stats.hpp"
 #include "game_objects/systems/upgrade.hpp"
-#include "macros.hpp"
 
 // ----- STRUCTURES -----------------------------
 /// Represents a test stat useful for testing.

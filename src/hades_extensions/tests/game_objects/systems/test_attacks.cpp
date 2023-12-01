@@ -1,7 +1,7 @@
 // Local headers
+#include "../../macros.hpp"
 #include "game_objects/stats.hpp"
 #include "game_objects/systems/attacks.hpp"
-#include "macros.hpp"
 
 // ----- FIXTURES ------------------------------
 /// Implements the fixture for the AttackSystem tests.

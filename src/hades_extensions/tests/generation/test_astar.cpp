@@ -1,6 +1,6 @@
 // Local headers
+#include "../macros.hpp"
 #include "generation/astar.hpp"
-#include "macros.hpp"
 
 // ----- FIXTURES ------------------------------
 /// Implements the fixture for the generation/astar.hpp tests.
