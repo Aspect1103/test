@@ -1,7 +1,5 @@
-# Define the minimum CMake version
+# Define some project-wide options
 cmake_minimum_required(VERSION 3.25.2)
-
-# Define some environment variables
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -35,8 +33,30 @@ else ()
     message(STATUS "Coverage disabled (ENABLE_COVERAGE is not set)")
 endif ()
 
-# Add the subdirectories for the different parts of the project
+# Fetch the pybind11 repository and initialise it
 include(FetchContent)
+FetchContent_Declare(
+        pybind11_source
+        GIT_REPOSITORY https://github.com/pybind/pybind11.git
+        GIT_TAG v2.10.3
+)
+FetchContent_GetProperties(pybind11_source)
+FetchContent_Populate(pybind11_source)
+add_subdirectory(
+        ${pybind11_source_SOURCE_DIR}
+        ${pybind11_source_BINARY_DIR}
+)
+
+# Fetch the GoogleTest repository and initialise it
+FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG v1.13.0
+)
+set(gtest_force_shared_crt ON CACHE BOOL "Always use msvcrt.dll" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+# Add the subdirectories for the different parts of the project
 add_subdirectory(src)
 if (DO_TESTS)
     add_subdirectory(tests)
