@@ -40,9 +40,8 @@ if (DO_TESTS)
     add_subdirectory(tests)
 endif ()
 
-# TODO: fix the ci build issues with clang-tidy
-# TODO: add the cmake presets to the build.py python script
-# TODO: add c++ coverage support to the ci build
-# TODO: rewrite the python templates for game objects
+# TODO: fix the remaining ci build issues with clang-tidy
 # TODO: change the components to pass by value and use std::move to signify that ownership is being transferred
+# TODO: rewrite the python templates for game objects
 # TODO: maybe add vcpkg to the c++ project
+# TODO: maybe switch to catch2
