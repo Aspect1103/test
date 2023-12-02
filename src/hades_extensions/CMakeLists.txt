@@ -41,7 +41,7 @@ endif ()
 # Add the subdirectories for the different parts of the project
 include(FetchContent)
 add_subdirectory(src)
-add_subdirectory(test)
+add_subdirectory(tests)
 
 # TODO: Get coverage fully working (could get temporary github repo to test it)
 # TODO: Try catch2
