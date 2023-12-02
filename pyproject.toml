@@ -246,7 +246,6 @@ python =
 [testenv]
 commands =
     python -m build -c
-    python -c "import hades_extensions"
     pytest --cov-append
 deps = pytest-cov
 passenv = *
