@@ -1,6 +1,6 @@
 // Local headers
-#include "../../macros.hpp"
 #include "game_objects/systems/inventory.hpp"
+#include "macros.hpp"
 
 // ----- FIXTURES ------------------------------
 /// Implements the fixture for the InventorySystem fixture.

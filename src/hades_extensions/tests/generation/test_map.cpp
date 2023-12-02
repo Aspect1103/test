@@ -2,8 +2,8 @@
 #include <numeric>
 
 // Local headers
-#include "../macros.hpp"
 #include "generation/map.hpp"
+#include "macros.hpp"
 
 // ----- FIXTURES ------------------------------
 /// Implements the fixture for the generation/map.hpp tests.
