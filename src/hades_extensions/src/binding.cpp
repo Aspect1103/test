@@ -116,10 +116,6 @@ PYBIND11_MODULE(hades_extensions, module) {  // NOLINT
   // Add the global constants and the base classes
   game_objects.attr("SPRITE_SCALE") = SPRITE_SCALE;
   game_objects.attr("SPRITE_SIZE") = SPRITE_SIZE;
-  game_objects.def(
-      "ActionFunction",
-      [](const ActionFunction &func) { return pybind11::cpp_function([func](int level) { return func(level); }); },
-      "A function that can be applied to a component.");
   const pybind11::class_<ComponentBase, std::shared_ptr<ComponentBase>> component_base(
       game_objects, "ComponentBase", "The base class for all components.");
   pybind11::class_<SystemBase, std::shared_ptr<SystemBase>>(game_objects, "SystemBase",
@@ -239,76 +235,6 @@ PYBIND11_MODULE(hades_extensions, module) {  // NOLINT
             "    game_object_id: The game object ID.\n\n"
             "Raises:\n"
             "    RegistryError: If the game object is not registered."))
-      .def(
-          "has_component",
-          [](const Registry &registry, const GameObjectID game_object_id, const pybind11::handle &component_type) {
-            return registry.has_component(game_object_id, get_type_index(component_type));
-          },
-          pybind11::arg("game_object_id"), pybind11::arg("component_type"),
-          ("Checks if a game object has a given component or not.\n\n"
-           "Args:\n"
-           "    game_object_id: The game object ID.\n"
-           "    component_type: The type of component to check for.\n\n"
-           "Raises:\n"
-           "    RuntimeError: If the component type is invalid.\n\n"
-           "Returns:\n"
-           "    Whether the game object has the component or not."))
-      .def(
-          "get_component",
-          [](const Registry &registry, const GameObjectID game_object_id, const pybind11::handle &component_type) {
-            return registry.get_component(game_object_id, get_type_index(component_type));
-          },
-          pybind11::arg("game_object_id"), pybind11::arg("component_type"),
-          ("Get a component from the registry.\n\n"
-           "Args:\n"
-           "    game_object_id: The game object ID.\n"
-           "    component_type: The type of component to get.\n\n"
-           "Raises:\n"
-           "    RegistryError: If the game object is not registered or if the game object does not have the "
-           "component."
-           "   RuntimeError: If the component type is invalid.\n\n"
-           "Returns:\n"
-           "    The component from the registry."))
-      .def(
-          "add_systems",
-          [](Registry &registry) {
-            registry.add_system<ArmourRegenSystem>();
-            registry.add_system<AttackSystem>();
-            registry.add_system<DamageSystem>();
-            registry.add_system<EffectSystem>();
-            registry.add_system<InventorySystem>();
-            registry.add_system<FootprintSystem>();
-            registry.add_system<KeyboardMovementSystem>();
-            registry.add_system<SteeringMovementSystem>();
-            registry.add_system<UpgradeSystem>();
-          },
-          ("Add all the systems into the registry.\n\n"
-           "Raises:\n"
-           "    RegistryError: If one of the systems is already registered."))
-      .def(
-          "get_system",
-          [](const Registry &registry, const pybind11::object &system_type) {
-            // Get all the system types and check if the given system type exists
-            static const auto &system_types =
-                make_system_types<ArmourRegenSystem, AttackSystem, DamageSystem, EffectSystem, InventorySystem,
-                                  FootprintSystem, KeyboardMovementSystem, SteeringMovementSystem, UpgradeSystem>();
-            auto iter = system_types.find(system_type);
-            if (iter == system_types.end()) {
-              throw std::runtime_error("Invalid system type provided.");
-            }
-
-            // Return the system from the registry
-            return iter->second(registry);
-          },
-          pybind11::arg("system_type"),
-          ("Get a system from the registry.\n\n"
-           "Args:\n"
-           "    system_type: The type of system to find.\n\n"
-           "Raises:\n"
-           "    RegistryError: If the system type is not registered.\n"
-           "    RuntimeError: If the system type is invalid..\n\n"
-           "Returns:\n"
-           "    The system from the registry."))
       .def("update", &Registry::update, pybind11::arg("delta_time"),
            ("Update all systems in the registry.\n\n"
             "Args:\n"
@@ -487,31 +413,6 @@ PYBIND11_MODULE(hades_extensions, module) {  // NOLINT
       .def_readwrite("increase", &StatusEffectData::increase)
       .def_readwrite("duration", &StatusEffectData::duration)
       .def_readwrite("interval", &StatusEffectData::interval);
-  pybind11::class_<EffectApplier, ComponentBase, std::shared_ptr<EffectApplier>>(
-      components, "EffectApplier", "Allows a game object to provide instant or status effects.")
-      .def(pybind11::init([](const pybind11::dict &instant_effects, const pybind11::dict &status_effects) {
-             // Create two mappings to hold the instant and status effects
-             std::unordered_map<std::type_index, ActionFunction> target_instant_effects;
-             std::unordered_map<std::type_index, StatusEffectData> target_status_effects;
-
-             // Iterate through the instant effects and add them to the mapping
-             for (const auto &item : instant_effects) {
-               target_instant_effects.emplace(get_type_index(item.first), item.second.cast<ActionFunction>());
-             }
-
-             // Iterate through the status effects and add them to the mapping
-             for (const auto &item : status_effects) {
-               target_status_effects.emplace(get_type_index(item.first), item.second.cast<StatusEffectData>());
-             }
-
-             // Initialise the object
-             return std::make_shared<EffectApplier>(target_instant_effects, target_status_effects);
-           }),
-           pybind11::arg("instant_effects"), pybind11::arg("status_effects"),
-           ("Initialise the object.\n\n"
-            "Args:\n"
-            "    instant_effects: The instant effects the game object provides.\n"
-            "    status_effects: The status effects the game object provides."));
   pybind11::class_<StatusEffects, ComponentBase, std::shared_ptr<StatusEffects>>(
       components, "StatusEffects", "Allows a game object to have status effects applied to it.")
       .def(pybind11::init<>(), "Initialise the object.");
@@ -688,24 +589,6 @@ PYBIND11_MODULE(hades_extensions, module) {  // NOLINT
             "Args:\n"
             "    money: The amount of money the game object has."))
       .def_readwrite("money", &Money::money);
-  pybind11::class_<Upgrades, ComponentBase, std::shared_ptr<Upgrades>>(components, "Upgrades",
-                                                                       "Allows a game object to be upgraded.")
-      .def(pybind11::init([](const pybind11::dict &upgrades) {
-             // Create a mapping to hold the upgrades
-             std::unordered_map<std::type_index, ActionFunction> target_upgrades;
-
-             // Iterate through the upgrades and add them to the mapping
-             for (const auto &item : upgrades) {
-               target_upgrades.emplace(get_type_index(item.first), item.second.cast<ActionFunction>());
-             }
-
-             // Initialise the object
-             return std::make_shared<Upgrades>(target_upgrades);
-           }),
-           pybind11::arg("upgrades"),
-           ("Initialise the object.\n\n"
-            "Args:\n"
-            "    upgrades: The upgrades the game object has."));
   pybind11::class_<UpgradeSystem, SystemBase, std::shared_ptr<UpgradeSystem>>(
       systems, "UpgradeSystem", "Provides facilities to manipulate game object upgrades.")
       .def(pybind11::init<Registry *>(), pybind11::arg("registry"),
