@@ -245,7 +245,7 @@ python =
 
 [testenv]
 commands =
-    python -m build -c
+    {envpython} -m build -c
     pytest --cov-append
 deps = pytest-cov
 passenv = *
