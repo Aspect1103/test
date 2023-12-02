@@ -249,6 +249,7 @@ commands =
     pytest --cov-append
 deps = pytest-cov
 passenv = *
+usedevelop = true
 
 [testenv:clean]
 commands = coverage erase
