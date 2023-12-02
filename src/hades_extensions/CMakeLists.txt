@@ -40,7 +40,7 @@ if (DO_TESTS)
     add_subdirectory(tests)
 endif ()
 
-# TODO: fix the remaining ci build issues with clang-tidy
+# TODO: fix the tox test error
 # TODO: change the components to pass by value and use std::move to signify that ownership is being transferred
 # TODO: rewrite the python templates for game objects
 # TODO: maybe add vcpkg to the c++ project
