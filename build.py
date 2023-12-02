@@ -97,15 +97,15 @@ def executable() -> None:
 
 def cpp() -> None:
     """Compiles the C++ extensions and installs them into the virtual environment."""
-    result_path = Path(__file__).parent.joinpath(
-        setup(
-            name="hades_extensions",
-            ext_modules=[Extension("hades_extensions", ["src/hades_extensions"])],
-            script_args=["bdist_wheel"],
-            cmdclass={"build_ext": CMakeBuild},
-        ).dist_files[0][2],
-    )
-    subprocess.run(["pip", "install", "--force-reinstall", result_path], check=True)
+    # result_path = Path(__file__).parent.joinpath(
+    #     setup(
+    #         name="hades_extensions",
+    #         ext_modules=[Extension("hades_extensions", ["src/hades_extensions"])],
+    #         script_args=["bdist_wheel"],
+    #         cmdclass={"build_ext": CMakeBuild},
+    #     ).dist_files[0][2],
+    # )
+    # subprocess.run(["pip", "install", "--force-reinstall", result_path], check=True)
 
 
 if __name__ == "__main__":
