@@ -246,6 +246,7 @@ python =
 [testenv]
 commands =
     python -m build -c
+    python -c "from hades_extensions.game_objects import SPRITE_SIZE; print(SPRITE_SIZE)"
     pytest --cov-append
 deps = pytest-cov
 passenv = *
