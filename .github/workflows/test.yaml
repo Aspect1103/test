@@ -50,7 +50,7 @@ jobs:
       - name: Configure and build CMake
         run: |
           cmake ${{ github.workspace }}/src/hades_extensions --preset Coverage
-          cmake --build build-coverage
+          cmake --build ${{ github.workspace }}/src/hades_extensions/build-coverage
       - name: Run CTest and generate the coverage report
         run: |
           ctest --output-on-failure --no-tests=error --test-dir build-coverage/tests
