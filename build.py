@@ -48,16 +48,13 @@ class CMakeBuild(build_ext):
                 str(current_dir.joinpath(ext.sources[0])),
                 f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE={build_dir}",
                 "-DDO_TESTS=OFF",
-                "--fresh",
                 "--preset",
                 "Release",
-                "-B",
-                "build",
             ],
             check=True,
         )
         subprocess.run(
-            ["cmake", "--build", "build"],
+            ["cmake", "--build", "src/hades_extensions/build-release"],
             check=True,
         )
 
@@ -108,10 +105,7 @@ def cpp() -> None:
             cmdclass={"build_ext": CMakeBuild},
         ).dist_files[0][2],
     )
-    subprocess.run(
-        ["pip", "install", "-v", "--force-reinstall", result_path],
-        check=True,
-    )
+    subprocess.run(["pip", "install", "--force-reinstall", result_path], check=True)
 
 
 if __name__ == "__main__":
