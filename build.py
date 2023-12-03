@@ -105,9 +105,6 @@ def cpp() -> None:
             cmdclass={"build_ext": CMakeBuild},
         ).dist_files[0][2],
     )
-    import sys
-
-    print("frhughr", sys.argv)
     subprocess.run(["pip", "install", "--force-reinstall", result_path], check=True)
 
 

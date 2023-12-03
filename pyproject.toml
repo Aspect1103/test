@@ -246,6 +246,7 @@ python =
 [testenv]
 commands =
     python -m build -c
+    {envbindir}/pip install {toxinidir}/dist/hades_extensions-*.whl
     pytest --cov-append
 deps = pytest-cov
 passenv = *
