@@ -105,9 +105,7 @@ def cpp() -> None:
             cmdclass={"build_ext": CMakeBuild},
         ).dist_files[0][2],
     )
-    subprocess.run(
-        ["pip", "install", "--force-reinstall", result_path, "-v"], check=True
-    )
+    subprocess.run(["pip", "install", "--force-reinstall", result_path], check=True)
 
 
 if __name__ == "__main__":

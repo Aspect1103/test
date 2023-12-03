@@ -246,12 +246,9 @@ python =
 [testenv]
 commands =
     python -m build -c
-    ls .tox/py310/Lib/site-packages/
-    ls .tox/py311/Lib/site-packages/
     pytest --cov-append
 deps = pytest-cov
 passenv = *
-allowlist_externals = ls
 
 [testenv:clean]
 commands = coverage erase
