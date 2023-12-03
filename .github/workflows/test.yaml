@@ -28,7 +28,12 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install libegl1
       - name: Run Tox
-        run: tox
+        run: |
+          # TODO: ITS A FUCKING TOX PROBLEM AS USUAL
+          pip install setuptools wheel
+          python -m build -c
+          python -c "import hades_extensions"
+          python -c "from hades_extensions.game_objects import SPRITE_SIZE; print(SPRITE_SIZE)"
       - name: Upload coverage report
         uses: coverallsapp/github-action@v2.2.3
         with:

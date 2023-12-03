@@ -245,6 +245,7 @@ python =
 
 [testenv]
 commands =
+    python -m tox_poetry_installer.install
     {envpython} -m build -c
     pytest --cov-append
 deps = pytest-cov
