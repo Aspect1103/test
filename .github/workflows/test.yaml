@@ -48,14 +48,15 @@ jobs:
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
       - name: Configure and build CMake
+        working-directory: ${{ github.workspace }}/src/hades_extensions
         run: |
           cmake --preset Coverage
           cmake --build build-coverage
       - name: Run CTest and generate the coverage report
         run: |
-          ctest --output-on-failure --no-tests=error --test-dir build-coverage/tests
+          ctest --output-on-failure --no-tests=error --test-dir ${{ github.workspace }}/src/hades_extensions/build-coverage/tests
           pip install gcovr
-          gcovr --exclude build-coverage --exclude ${{ github.workspace }}/src/hades_extensions/tests --exclude ${{ github.workspace }}/src/hades_extensions/src/binding.cpp --coveralls coverage.json
+          gcovr --exclude ${{ github.workspace }}/src/hades_extensions/build-coverage --exclude ${{ github.workspace }}/src/hades_extensions/tests --exclude ${{ github.workspace }}/src/hades_extensions/src/binding.cpp --coveralls coverage.json
       - name: Upload coverage report
         uses: coverallsapp/github-action@v2.2.3
         with:
