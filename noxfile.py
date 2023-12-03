@@ -17,6 +17,7 @@ def clean(session: nox.Session) -> None:
 def tests(session: nox.Session) -> None:
     """TODO."""
     session.install(".")
+    session.install("pytest-cov")
     session.run_always("python", "-m", "build", "--cpp")
     session.run("pytest", "--cov-append")
 
