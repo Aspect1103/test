@@ -53,14 +53,15 @@ jobs:
           cmake --preset Coverage
           cmake --build build-coverage
       - name: Run CTest and generate the coverage report
+        working-directory: ${{ github.workspace }}/src
         run: |
-          ctest --output-on-failure --no-tests=error --test-dir ${{ github.workspace }}/src/hades_extensions/build-coverage/tests
+          ctest --output-on-failure --no-tests=error --test-dir hades_extensions/build-coverage/tests
           pip install gcovr
-          gcovr --exclude ${{ github.workspace }}/src/hades_extensions/build-coverage --exclude ${{ github.workspace }}/src/hades_extensions/tests --exclude ${{ github.workspace }}/src/hades_extensions/src/binding.cpp --coveralls coverage.json
+          gcovr --exclude hades_extensions/build-coverage --exclude hades_extensions/tests --exclude hades_extensions/src/binding.cpp --coveralls coverage.json
       - name: Upload coverage report
         uses: coverallsapp/github-action@v2.2.3
         with:
-          file: coverage.json
+          file: ${{ github.workspace }}/src/coverage.json
           flag-name: run-cpp-${{ matrix.os }}
           parallel: true
   finish:
