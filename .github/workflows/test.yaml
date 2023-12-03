@@ -54,8 +54,9 @@ jobs:
           cmake --build build-coverage
       - name: Run CTest and generate the coverage report
         run: |
-          ctest --output-on-failure --no-tests=error --test-dir ${{ github.workspace }}/src/hades_extensions/build-coverage/tests
+          ctest --output-on-failure --no-tests=error --test-dir ${{ github.workspace }}/src/hades_extensions
           pip install gcovr
+          ls ${{ github.workspace }}/src/hades_extensions
           gcovr --exclude ${{ github.workspace }}/src/hades_extensions/build-coverage --exclude ${{ github.workspace }}/src/hades_extensions/tests --exclude ${{ github.workspace }}/src/hades_extensions/src/binding.cpp --coveralls coverage.json
       - name: Upload coverage report
         uses: coverallsapp/github-action@v2.2.3
