@@ -36,9 +36,7 @@ endif ()
 # Add the subdirectories for the different parts of the project
 include(FetchContent)
 add_subdirectory(src)
-if (DO_TESTS)
-    add_subdirectory(tests)
-endif ()
+add_subdirectory(tests)
 
 # TODO: fix the tox test error
 # TODO: change the components to pass by value and use std::move to signify that ownership is being transferred
