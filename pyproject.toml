@@ -230,7 +230,7 @@ src = ["src"]
     "S101",  # Ignore flake8-bandit assert rule for the tests
 ]
 
-[tool.ruffhcehf.pydocstyle]
+[tool.ruff.pydocstyle]
 convention = "google"
 
 [tool.tox]
@@ -248,6 +248,7 @@ commands =
     {envpython} -m build -c
     pytest --cov-append
 deps = pytest-cov
+    tox-poetry-installer
 passenv = *
 
 [testenv:clean]
