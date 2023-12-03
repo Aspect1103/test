@@ -42,6 +42,9 @@ class CMakeBuild(build_ext):
         # compiled
         build_dir = current_dir.joinpath(self.get_ext_fullpath(ext.name)).parent
         build_dir.mkdir(parents=True, exist_ok=True)
+        print("build", build_dir)
+        print("current", current_dir)
+        print("str", str(current_dir.joinpath(ext.sources[0])))
 
         # Compile and build the CMake extension
         subprocess.run(
@@ -106,7 +109,6 @@ def cpp() -> None:
             cmdclass={"build_ext": CMakeBuild},
         ).dist_files[0][2],
     )
-    print("result ", result_path)
     subprocess.run(
         ["pip", "install", "-v", "--force-reinstall", result_path], check=True
     )
