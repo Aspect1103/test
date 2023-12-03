@@ -28,6 +28,7 @@ jobs:
       - name: Run Nox
         run: |
           pip install nox
+          nox -l
           nox --session tests-{{ matrix.python-version }}
       - name: Upload coverage report
         uses: coverallsapp/github-action@v2.2.3
