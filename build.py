@@ -107,7 +107,9 @@ def cpp() -> None:
         ).dist_files[0][2],
     )
     print("result ", result_path)
-    subprocess.run(["pip", "install", "-v", "--force-reinstall", result_path], check=True)
+    subprocess.run(
+        ["pip", "install", "-v", "--force-reinstall", result_path], check=True
+    )
 
 
 if __name__ == "__main__":

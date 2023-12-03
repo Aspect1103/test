@@ -12,6 +12,5 @@ def tests(session: nox.Session) -> None:
     session.install(".")
     session.install("pytest-cov")
     session.run_always("python", "-m", "build", "--cpp")
-    session.run("pip", "list")
     session.run("pytest", "--cov-append")
     session.run("coverage", "lcov")
