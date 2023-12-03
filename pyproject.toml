@@ -19,6 +19,7 @@ arcade = "3.0.0.dev25"
 [tool.poetry.dev-dependencies]
 black = "23.11.0"
 mypy = "1.7.0"
+nox = "2023.04.22"
 nuitka = "1.8.6"
 ordered-set = "4.1.0"
 pre-commit = "3.5.0"
@@ -31,7 +32,6 @@ pytest-randomly = "3.15.0"
 pytest-sugar = "0.9.7"
 ruff = "0.1.6"
 ssort = "v0.11.6"
-tox = "4.11.3"
 
 [tool.black]
 preview = true
@@ -232,29 +232,3 @@ src = ["src"]
 
 [tool.ruff.pydocstyle]
 convention = "google"
-
-[tool.tox]
-legacy_tox_ini = """
-[tox]
-envlist = clean, py310, py311, report
-
-[gh-actions]
-python =
-    3.10: clean, py310, report
-    3.11: clean, py311, report
-
-[testenv]
-commands =
-    python -m build -c
-    pytest --cov-append
-deps = pytest-cov
-passenv = *
-
-[testenv:clean]
-commands = coverage erase
-deps = pytest-cov
-
-[testenv:report]
-commands = coverage lcov
-deps = pytest-cov
-"""

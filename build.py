@@ -49,6 +49,7 @@ class CMakeBuild(build_ext):
                 "cmake",
                 str(current_dir.joinpath(ext.sources[0])),
                 "--preset Release",
+                "-DDO_TESTS=OFF",
                 f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE={build_dir}",
             ],
             check=True,
