@@ -42,9 +42,6 @@ class CMakeBuild(build_ext):
         # compiled
         build_dir = current_dir.joinpath(self.get_ext_fullpath(ext.name)).parent
         build_dir.mkdir(parents=True, exist_ok=True)
-        print("build", build_dir)
-        print("current", current_dir)
-        print("str", str(current_dir.joinpath(ext.sources[0])))
 
         # Compile and build the CMake extension
         subprocess.run(
