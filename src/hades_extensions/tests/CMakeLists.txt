@@ -1,5 +1,5 @@
 # Fetch the GoogleTest repository and initialise it
-find_package(gtest CONFIG REQUIRED)
+find_package(GTest CONFIG REQUIRED)
 
 # Create an executable from our test code and link it against GTest and the C++ library
 include(CTest)
