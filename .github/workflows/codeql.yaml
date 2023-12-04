@@ -34,7 +34,7 @@ jobs:
         uses: lukka/get-cmake@v3.27.7
       - name: Set up vcpkg
         if: matrix.language == 'cpp'
-        uses: microsoft/vcpkg@v1.2.0
+        uses: lukka/run-vcpkg@v11.3
         with:
           vcpkgGitCommitId: 2023.11.20
       - name: Install Poetry

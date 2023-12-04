@@ -23,7 +23,7 @@ jobs:
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1.12.1
       - name: Set up vcpkg
-        uses: microsoft/vcpkg@v1.2.0
+        uses: lukka/run-vcpkg@v11.3
         with:
           vcpkgGitCommitId: 2023.11.20
       - name: Set up CMake
@@ -52,7 +52,7 @@ jobs:
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
       - name: Set up vcpkg
-        uses: microsoft/vcpkg@v1.2.0
+        uses: lukka/run-vcpkg@v11
         with:
           vcpkgGitCommitId: 2023.11.20
       - name: Configure and build CMake
