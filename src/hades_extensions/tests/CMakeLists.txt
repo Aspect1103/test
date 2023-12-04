@@ -20,6 +20,7 @@ add_executable(${TEST_MODULE}
 target_include_directories(${TEST_MODULE} PUBLIC ${CMAKE_SOURCE_DIR}/tests)
 target_link_libraries(
         ${TEST_MODULE}
+        GTest::gtest
         GTest::gtest_main
         ${CPP_LIB}
 )
