@@ -8,6 +8,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(ENABLE_COVERAGE OFF CACHE BOOL "Enable coverage reporting for GCC/Clang")
 set(ENABLE_STATIC_ANALYSIS OFF CACHE BOOL "Enable static analysis using clang-tidy")
 set(DO_TESTS ON CACHE BOOL "Enable testing")
+set(CMAKE_TOOLCHAIN_FILE $ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake CACHE STRING "Vcpkg toolchain file")
 
 # Define the module names and initialise the project
 set(PY_MODULE hades_extensions)
@@ -36,10 +37,9 @@ endif ()
 # Add the subdirectories for the different parts of the project
 include(FetchContent)
 add_subdirectory(src)
-add_subdirectory(tests)
+if (DO_TESTS)
+    add_subdirectory(tests)
+endif ()
 
-# TODO: fix the tox test error
-# TODO: change the components to pass by value and use std::move to signify that ownership is being transferred
-# TODO: rewrite the python templates for game objects
 # TODO: maybe add vcpkg to the c++ project
 # TODO: maybe switch to catch2

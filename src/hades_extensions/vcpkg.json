@@ -1,0 +1,27 @@
+{
+  "name": "hades-extensions",
+  "version-string": "0.0.0",
+  "builtin-baseline": "f740d6f22908ccd8a519228a26b267f7a68dda9c",
+  "dependencies": [
+    {
+      "name": "catch2",
+      "version>=": "3.4.0"
+    },
+    {
+      "name": "gtest",
+      "version>=": "1.14.0"
+    },
+    {
+      "name": "pybind11",
+      "version>=": "2.11.1"
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "version>=": "2022-02-06#1"
+    },
+    {
+      "name": "vcpkg-cmake",
+      "version>=": "2023-05-04"
+    }
+  ]
+}

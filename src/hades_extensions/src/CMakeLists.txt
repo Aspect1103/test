@@ -1,16 +1,6 @@
 # Fetch the pybind11 repository and initialise it
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
-FetchContent_Declare(
-        pybind11_source
-        GIT_REPOSITORY https://github.com/pybind/pybind11.git
-        GIT_TAG v2.10.3
-)
-FetchContent_GetProperties(pybind11_source)
-FetchContent_Populate(pybind11_source)
-add_subdirectory(
-        ${pybind11_source_SOURCE_DIR}
-        ${pybind11_source_BINARY_DIR}
-)
+find_package(pybind11 CONFIG REQUIRED)
 
 # Create the C++ library which will be used for the tests and the Python module
 add_library(${CPP_LIB} STATIC
