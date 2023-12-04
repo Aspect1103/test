@@ -35,6 +35,8 @@ jobs:
       - name: Set up vcpkg
         if: matrix.language == 'cpp'
         uses: lukka/run-vcpkg@v11.3
+        with:
+          vcpkgDirectory: ${{ github.workspace }}/src/hades_extensions/vcpkg
       - name: Install Poetry
         if: matrix.language == 'python'
         uses: snok/install-poetry@v1.3.4

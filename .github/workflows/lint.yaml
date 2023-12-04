@@ -16,6 +16,8 @@ jobs:
         uses: lukka/get-cmake@v3.27.7
       - name: Set up vcpkg
         uses: lukka/run-vcpkg@v11.3
+        with:
+          vcpkgDirectory: ${{ github.workspace }}/src/hades_extensions/vcpkg
       - name: Configure CMake
         working-directory: ${{ github.workspace }}/src/hades_extensions
         run: cmake --preset Debug
@@ -43,6 +45,8 @@ jobs:
         uses: lukka/get-cmake@v3.27.7
       - name: Set up vcpkg
         uses: lukka/run-vcpkg@v11.3
+        with:
+          vcpkgDirectory: ${{ github.workspace }}/src/hades_extensions/vcpkg
       - name: Run clang-format
         uses: jidicula/clang-format-action@v4.11.0
         with:
