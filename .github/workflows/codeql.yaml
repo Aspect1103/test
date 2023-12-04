@@ -35,8 +35,6 @@ jobs:
       - name: Set up vcpkg
         if: matrix.language == 'cpp'
         uses: lukka/run-vcpkg@v11.3
-        with:
-          vcpkgGitCommitId: 2023.11.20
       - name: Install Poetry
         if: matrix.language == 'python'
         uses: snok/install-poetry@v1.3.4
