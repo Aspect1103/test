@@ -1,5 +1,5 @@
 # Fetch the pybind11 repository and initialise it
-find_package(Python COMPONENTS Interpreter Development REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 
 # Create the C++ library which will be used for the tests and the Python module
