@@ -72,6 +72,7 @@ jobs:
           ctest --output-on-failure --no-tests=error --test-dir ${{ github.workspace }}/src/hades_extensions/build-coverage/tests
           gcovr -r ${{ github.workspace }} --exclude src/hades_extensions/build-coverage --exclude src/hades_extensions/tests --exclude src/hades_extensions/src/binding.cpp --coveralls coverage.json
       - name: Upload coverage report
+        if: matrix.os == 'ubuntu-latest'
         uses: coverallsapp/github-action@v2.2.3
         with:
           file: coverage.json
