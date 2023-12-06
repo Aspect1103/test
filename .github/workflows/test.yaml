@@ -53,21 +53,27 @@ jobs:
           submodules: recursive
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1.12.1
-      - name: Set up CMake
-        uses: lukka/get-cmake@v3.27.7
       - name: Set up vcpkg
         uses: lukka/run-vcpkg@v11.3
         with:
           vcpkgDirectory: ${{ github.workspace }}/src/hades_extensions/vcpkg
-      - name: Configure and build CMake
+      - name: Build CMake and run tests
         working-directory: ${{ github.workspace }}/src/hades_extensions
         run: |
-          cmake --preset Coverage
-          cmake --build build-coverage
+          BUILD_TYPE="Release"
+          BUILD_DIR="build-release"
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            BUILD_DIR="build-coverage"
+            BUILD_TYPE="Coverage"
+          fi
+          
+          cmake --preset $BUILD_TYPE
+          cmake --build $BUILD_DIR
+          ctest --output-on-failure --no-tests=error --test-dir ${{ github.workspace }}/src/hades_extensions/$BUILD_DIR/tests
       - name: Run CTest and generate the coverage report
+        if: matrix.os == 'ubuntu-latest'
         run: |
           pip install gcovr
-          ctest --output-on-failure --no-tests=error --test-dir ${{ github.workspace }}/src/hades_extensions/build-coverage/tests
           gcovr -r ${{ github.workspace }} --exclude src/hades_extensions/build-coverage --exclude src/hades_extensions/tests --exclude src/hades_extensions/src/binding.cpp --coveralls coverage.json
       - name: Upload coverage report
         uses: coverallsapp/github-action@v2.2.3
