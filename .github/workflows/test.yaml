@@ -22,6 +22,8 @@ jobs:
         uses: actions/setup-python@v4.7.1
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Set up MSVC
+        uses: lukka/setup-msvc@v1.12.1
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
       - name: Set up vcpkg
@@ -51,6 +53,8 @@ jobs:
         uses: actions/checkout@v4.1.1
         with:
           submodules: recursive
+      - name: Set up MSVC
+        uses: lukka/setup-msvc@v1.12.1
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
       - name: Set up vcpkg
