@@ -1,6 +1,6 @@
 # Fetch the pybind11 repository and initialise it
-find_package(PythonInterp REQUIRED)
-find_package(pybind11 CONFIG REQUIRED)
+find_package(Python COMPONENTS Interpreter Development REQUIRED)
+find_package(pybind11 REQUIRED)
 
 # Create the C++ library which will be used for the tests and the Python module
 add_library(${CPP_LIB} STATIC
@@ -18,6 +18,7 @@ add_library(${CPP_LIB} STATIC
         ${CMAKE_SOURCE_DIR}/src/generation/primitives.cpp
 )
 target_include_directories(${CPP_LIB} PUBLIC ${CMAKE_SOURCE_DIR}/include)
+target_compile_definitions(${CPP_LIB} PUBLIC Py_DEBUG)
 
 # Create the Python module
 pybind11_add_module(${PY_MODULE} ${CMAKE_SOURCE_DIR}/src/binding.cpp)
