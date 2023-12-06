@@ -18,8 +18,8 @@ add_library(${CPP_LIB} STATIC
         ${CMAKE_SOURCE_DIR}/src/generation/primitives.cpp
 )
 target_include_directories(${CPP_LIB} PUBLIC ${CMAKE_SOURCE_DIR}/include)
-target_compile_definitions(${CPP_LIB} PUBLIC Py_DEBUG)
 
 # Create the Python module
+target_compile_definitions(${PY_MODULE} PRIVATE Py_DEBUG)
 pybind11_add_module(${PY_MODULE} ${CMAKE_SOURCE_DIR}/src/binding.cpp)
 target_link_libraries(${PY_MODULE} PRIVATE ${CPP_LIB})
