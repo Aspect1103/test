@@ -1,5 +1,5 @@
 # Fetch the pybind11 repository and initialise it
-find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
+find_package(PythonInterp REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 
 # Create the C++ library which will be used for the tests and the Python module
@@ -21,5 +21,4 @@ target_include_directories(${CPP_LIB} PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
 # Create the Python module
 pybind11_add_module(${PY_MODULE} ${CMAKE_SOURCE_DIR}/src/binding.cpp)
-target_compile_definitions(${PY_MODULE} PRIVATE Py_DEBUG)
 target_link_libraries(${PY_MODULE} PRIVATE ${CPP_LIB})
