@@ -46,3 +46,5 @@ jobs:
         uses: svenstaro/upload-release-action@2.7.0
         with:
           file: hades.zip
+
+# TODO: Just copy everything and do build.yaml later on. Idk about the submodule
