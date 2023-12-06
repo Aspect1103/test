@@ -59,6 +59,7 @@ jobs:
           vcpkgDirectory: ${{ github.workspace }}/src/hades_extensions/vcpkg
       - name: Build CMake and run tests
         working-directory: ${{ github.workspace }}/src/hades_extensions
+        shell: bash
         run: |
           BUILD_TYPE="Release"
           BUILD_DIR="build-release"
