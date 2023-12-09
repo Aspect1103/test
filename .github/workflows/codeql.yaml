@@ -30,6 +30,8 @@ jobs:
       - name: Autobuild C++
         if: matrix.language == 'cpp'
         uses: github/codeql-action/autobuild@v2.22.9
+        with:
+          working-directory: ${{ github.workspace }}/src/hades_extensions
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2.22.9
         with:
