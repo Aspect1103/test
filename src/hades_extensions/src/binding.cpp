@@ -25,7 +25,10 @@ struct py_handle_hash {
   /// @param handle The handle to calculate the hash of.
   /// @return The hash of the handle.
   auto operator()(const pybind11::handle &handle) const -> std::size_t { return pybind11::hash(handle); }
+};
 
+/// The equality function for a pybind11 handle.
+struct py_handle_equal {
   /// Check if two pybind11 handles are equal.
   ///
   /// @param handle_one The first handle to compare.
@@ -52,7 +55,7 @@ auto get_system_impl(const Registry &registry) -> std::shared_ptr<SystemBase> {
 ///
 /// @return The component types mapping.
 template <typename... Ts>
-auto make_component_types() -> std::unordered_map<pybind11::handle, std::type_index, py_handle_hash> {
+auto make_component_types() -> std::unordered_map<pybind11::handle, std::type_index, py_handle_hash, py_handle_equal> {
   return {{pybind11::type::of<Ts>(), typeid(Ts)}...};
 }
 
@@ -62,7 +65,7 @@ auto make_component_types() -> std::unordered_map<pybind11::handle, std::type_in
 template <typename... Ts>
 auto make_system_types()
     -> std::unordered_map<pybind11::handle, std::function<std::shared_ptr<SystemBase>(const Registry &)>,
-                          py_handle_hash> {
+                          py_handle_hash, py_handle_equal> {
   return {{pybind11::type::of<Ts>(), get_system_impl<Ts>}...};
 }
 

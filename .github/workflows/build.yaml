@@ -15,36 +15,20 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
-        with:
-          submodules: recursive
       - name: Set up Python 3.11
         uses: actions/setup-python@v4.7.1
         with:
           python-version: 3.11
-      - name: Set up MSVC
-        uses: ilammy/msvc-dev-cmd@v1.12.1
-      - name: Set up CMake
-        uses: lukka/get-cmake@v3.27.7
-      - name: Set up vcpkg
-        uses: lukka/run-vcpkg@v11.3
-        with:
-          vcpkgDirectory: ${{ github.workspace }}/src/hades_extensions/vcpkg
       - name: Install Poetry
         uses: snok/install-poetry@v1.3.4
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
       - name: Install Python dependencies
-        run: |
-          pip install wheel setuptools poetry-core
-          poetry install --no-interaction
+        run: poetry install --no-interaction
       - name: Build the game
-        run: |
-          python -m build --cpp
-          python -m build --executable
+        run: python -m build --executable
       - name: Upload the release
         uses: svenstaro/upload-release-action@2.7.0
         with:
           file: hades.zip
-
-# TODO: Just copy everything and do build.yaml later on. Idk about the submodule

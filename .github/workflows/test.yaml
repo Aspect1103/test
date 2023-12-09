@@ -16,8 +16,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
-        with:
-          submodules: recursive
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4.7.1
         with:
@@ -26,10 +24,6 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1.12.1
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
-      - name: Set up vcpkg
-        uses: lukka/run-vcpkg@v11.3
-        with:
-          vcpkgDirectory: ${{ github.workspace }}/src/hades_extensions/vcpkg
       - name: Install EGL on Linux for headless Arcade
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install libegl1
@@ -51,26 +45,21 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
-        with:
-          submodules: recursive
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1.12.1
       - name: Set up CMake
         uses: lukka/get-cmake@v3.27.7
-      - name: Set up vcpkg
-        uses: lukka/run-vcpkg@v11.3
-        with:
-          vcpkgDirectory: ${{ github.workspace }}/src/hades_extensions/vcpkg
-      - name: Configure and build CMake
+      - name: Build CMake and run CTest
         working-directory: ${{ github.workspace }}/src/hades_extensions
         run: |
-          cmake -DDO_PYTHON=OFF --preset Coverage
-          cmake --build build-coverage
-      - name: Run CTest and generate the coverage report
+          cmake --preset Debug
+          cmake --build build-debug
+          ctest --output-on-failure --no-tests=error --test-dir ${{ github.workspace }}/src/hades_extensions/build-debug/tests
+      - name: Generate the coverage report
+        if: matrix.os == 'ubuntu-latest'
         run: |
           pip install gcovr
-          ctest --output-on-failure --no-tests=error --test-dir ${{ github.workspace }}/src/hades_extensions/build-coverage/tests
-          gcovr -r ${{ github.workspace }} --exclude src/hades_extensions/build-coverage --exclude src/hades_extensions/tests --exclude src/hades_extensions/src/binding.cpp --coveralls coverage.json
+          gcovr -r ${{ github.workspace }} --exclude src/hades_extensions/build-debug --exclude src/hades_extensions/tests --exclude src/hades_extensions/src/binding.cpp --coveralls coverage.json
       - name: Upload coverage report
         if: matrix.os == 'ubuntu-latest'
         uses: coverallsapp/github-action@v2.2.3
@@ -86,5 +75,3 @@ jobs:
         uses: coverallsapp/github-action@v2.2.3
         with:
           parallel-finished: true
-
-# TODO: Move towards passing full --cpp or --executable to build.py + pass -Wall and -Wextra to cmake

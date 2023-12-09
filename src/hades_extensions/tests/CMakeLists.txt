@@ -1,5 +1,11 @@
 # Fetch the GoogleTest repository and initialise it
-find_package(GTest CONFIG REQUIRED)
+FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG v1.14.0
+)
+set(gtest_force_shared_crt ON CACHE BOOL "Always use msvcrt.dll" FORCE)
+FetchContent_MakeAvailable(googletest)
 
 # Create an executable from our test code and link it against GTest and the C++ library
 include(CTest)
@@ -20,8 +26,7 @@ add_executable(${TEST_MODULE}
 target_include_directories(${TEST_MODULE} PUBLIC ${CMAKE_SOURCE_DIR}/tests)
 target_link_libraries(
         ${TEST_MODULE}
-        GTest::gtest
-        GTest::gtest_main
+        gtest_main
         ${CPP_LIB}
 )
 
