@@ -23,6 +23,7 @@ jobs:
         uses: github/codeql-action/init@v2.22.8
         with:
           languages: ${{ matrix.language }}
+          setup-python-dependencies: false
       - name: Set up Python 3.11
         if: matrix.language == 'python'
         uses: actions/setup-python@v4.7.1
@@ -37,13 +38,6 @@ jobs:
         with:
           virtualenvs-create: true
           virtualenvs-in-project: true
-      - name: Install Python dependencies
-        if: matrix.language == 'python'
-        run: poetry install --no-interaction
-      - name: Configure CMake
-        if: matrix.language == 'cpp'
-        working-directory: ${{ github.workspace }}/src/hades_extensions
-        run: cmake --preset Debug
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2.22.8
         with:
