@@ -24,9 +24,6 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           setup-python-dependencies: false
-      - name: Set up CMake
-        if: matrix.language == 'cpp'
-        uses: lukka/get-cmake@v3.27.7
       - name: Autobuild C++
         if: matrix.language == 'cpp'
         uses: github/codeql-action/autobuild@v2.22.9
