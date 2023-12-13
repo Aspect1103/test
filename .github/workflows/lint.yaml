@@ -16,10 +16,7 @@ jobs:
         uses: lukka/get-cmake@v3.27.7
       - name: Configure CMake
         working-directory: ${{ github.workspace }}/src/hades_extensions
-        run: |
-          cmake --preset Debug
-          gcc --version
-          clang --version
+        run: cmake --preset Debug
       - name: Run clang-tidy
         working-directory: ${{ github.workspace }}/src/hades_extensions
         run: clang-tidy -p ./build-debug/compile_commands.json --extra-arg=-std=c++20 --quiet ./**/*.cpp ./**/*.hpp
