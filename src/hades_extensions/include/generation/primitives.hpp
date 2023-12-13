@@ -122,12 +122,12 @@ struct Rect {
   Rect(const Position &top_left, const Position &bottom_right)
       : top_left(top_left),
         bottom_right(bottom_right),
-        // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-        centre(static_cast<int>(std::round((top_left + bottom_right).x / 2.0)),
-               static_cast<int>(std::round((top_left + bottom_right).y / 2.0))),
-        // NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
         width((top_left - bottom_right).x),
-        height((top_left - bottom_right).y) {}
+        height((top_left - bottom_right).y) {
+    // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+    centre = {static_cast<int>(std::round((top_left + bottom_right).x / 2.0)), static_cast<int>(std::round((top_left + bottom_right).y / 2.0))};
+    // NOLINTEND(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+  }
 
   /// Get the Chebyshev distance to another rect.
   ///
