@@ -81,9 +81,7 @@ struct Vec2d {
   ///
   /// @param other - The vector to get the distance to.
   /// @return The distance to the other vector.
-  [[nodiscard]] auto distance_to(const Vec2d &other) const -> double {
-    return std::hypot(x - other.x, y - other.y);
-  }
+  [[nodiscard]] auto distance_to(const Vec2d &other) const -> double { return std::hypot(x - other.x, y - other.y); }
 };
 
 /// Stores various data about a game object for use in physics-related operations.
