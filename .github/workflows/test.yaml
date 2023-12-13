@@ -52,7 +52,7 @@ jobs:
       - name: Build CMake and run CTest
         working-directory: ${{ github.workspace }}/src/hades_extensions
         run: |
-          cmake --preset Debug -DDO_PYTHON=OFF
+          cmake -DDO_PYTHON=OFF --preset Debug
           cmake --build build-debug
           ctest --output-on-failure --no-tests=error --test-dir ${{ github.workspace }}/src/hades_extensions/build-debug/tests
       - name: Generate the coverage report
