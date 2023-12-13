@@ -3,7 +3,6 @@
 
 // Std headers
 #include <memory>
-#include <ranges>
 #include <stdexcept>
 #include <string>
 #include <typeindex>
@@ -209,7 +208,7 @@ class Registry {
   ///
   /// @param delta_time - The time interval since the last time the function was called.
   void update(const double delta_time) const {
-    for (const auto &system : std::views::values(systems_)) {
+    for (const auto &[_, system] : systems_) {
       system->update(delta_time);
     }
   }
