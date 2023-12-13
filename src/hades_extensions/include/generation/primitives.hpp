@@ -34,15 +34,6 @@ struct Position {
     return {std::abs(x - position.x), std::abs(y - position.y)};
   }
 
-  /// The default constructor.
-  Position() = default;
-
-  /// Initialise the object.
-  ///
-  /// @param x - The x position of the position.
-  /// @param y - The y position of the position.
-  constexpr Position(const int x, const int y) : x(x), y(y) {}
-
   /// The x position of the position.
   int x;
 

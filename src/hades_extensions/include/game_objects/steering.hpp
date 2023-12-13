@@ -51,8 +51,8 @@ struct Vec2d {
   ///
   /// @return The normalised vector.
   [[nodiscard]] auto normalised() const -> Vec2d {
-    const double magnitude{this->magnitude()};
-    return (magnitude == 0) ? Vec2d{0, 0} : Vec2d{x / magnitude, y / magnitude};
+    const double magnitude_val{this->magnitude()};
+    return (magnitude_val == 0) ? Vec2d{0, 0} : Vec2d{x / magnitude_val, y / magnitude_val};
   }
 
   /// Rotate the vector by an angle.
