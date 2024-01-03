@@ -6,12 +6,13 @@ from __future__ import annotations
 import logging
 import math
 import random
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING
 
 # Pip
 from arcade import (
     MOUSE_BUTTON_LEFT,
     Camera,
+    PymunkPhysicsEngine,
     SpriteList,
     Text,
     View,
@@ -23,107 +24,112 @@ from arcade import (
 
 # Custom
 from hades.constants import (
+    COLLECTIBLE_TYPES,
+    DAMPING,
     ENEMY_GENERATE_INTERVAL,
     ENEMY_GENERATION_DISTANCE,
     ENEMY_RETRY_COUNT,
+    MAX_VELOCITY,
     TOTAL_ENEMY_COUNT,
+    USABLE_TYPES,
     GameObjectType,
 )
-from hades.constructors import ENEMY, FLOOR, PLAYER, POTION, WALL
-from hades.physics import PhysicsEngine
-from hades.sprite import HadesSprite
-from hades.textures import grid_pos_to_pixel
+from hades.constructors import ENEMY, FLOOR, PLAYER, POTION, WALL, GameObjectConstructor
+from hades.sprite import AnimatedSprite, HadesSprite, grid_pos_to_pixel
 from hades_extensions.game_objects import SPRITE_SIZE, Registry, Vec2d
 from hades_extensions.game_objects.components import KeyboardMovement, SteeringMovement
-from hades_extensions.game_objects.systems import AttackSystem
+from hades_extensions.game_objects.systems import (
+    AttackSystem,
+    EffectSystem,
+    InventorySystem,
+    KeyboardMovementSystem,
+    SteeringMovementSystem,
+)
 from hades_extensions.generation import TileType, create_map
 
 if TYPE_CHECKING:
-    from hades.constructors import GameObjectConstructor
+    from hades.indicator_bar import IndicatorBar
 
-all__ = ("Game",)
+__all__ = ("Game",)
 
 # Get the logger
 logger = logging.getLogger(__name__)
 
 
-class LevelConstants(NamedTuple):
-    """Holds the constants for a specific level.
-
-    Args:
-        level: The level of this game.
-        width: The width of the dungeon.
-        height: The height of the dungeon.
-    """
-
-    level: int
-    width: int
-    height: int
+# TODO: Add player attacking enemy (so switching and attacking). Will require components
+#  and indicator bars too
+# TODO: Moving the physics engine to C++ would massively help, but needs a lot of work
 
 
 class Game(View):
     """Manages the game and its actions.
 
     Attributes:
-        level_constants: Holds the constants for the current level.
-        registry: The registry which manages the game objects.
-        ids: The dictionary which stores the IDs and sprites for each game object type.
+        game_camera: The camera used for moving the viewport around the screen.
+        gui_camera: The camera used for visualising the GUI elements.
+        physics_engine: The physics engine which processes wall collision.
         tile_sprites: The sprite list for the tile game objects.
         entity_sprites: The sprite list for the entity game objects.
         item_sprites: The sprite list for the item game objects.
-        physics_engine: The physics engine which processes wall collision.
-        game_camera: The camera used for moving the viewport around the screen.
-        gui_camera: The camera used for visualising the GUI elements.
-        possible_enemy_spawns: A list of possible positions that enemies can spawn in.
+        nearest_item: The nearest item to the player.
         player_status_text: The text object used for displaying the player's health and
             armour.
+        level_constants: Holds the constants for the current level.
+        registry: The registry which manages the game objects.
+        ids: The dictionary which stores the IDs and sprites for each game object type.
+        possible_enemy_spawns: A list of possible positions that enemies can spawn in.
+        indicator_bars: A list of indicator bars that are currently being displayed.
     """
 
-    def _initialise_game_object(
+    def _create_sprite(
         self: Game,
         constructor: GameObjectConstructor,
-        sprite_list: SpriteList[HadesSprite],
         position: tuple[int, int],
-    ) -> int:
-        """Initialise a game object from a constructor into the ECS.
+    ) -> HadesSprite:
+        """Create a sprite.
 
         Args:
-            constructor: The game object constructor to initialise.
-            sprite_list: The sprite list to add the sprite object too.
+            constructor: The constructor for the game object.
             position: The position of the game object in the grid.
 
         Returns:
-            The game object ID.
+            The created sprite object.
         """
-        # Initialise a sprite object
-        game_object_id = self.registry.create_game_object(
-            constructor.components,
-            kinematic=constructor.kinematic,
-        )
-        sprite_obj = HadesSprite(
-            (game_object_id, constructor.game_object_type is not GameObjectType.PLAYER),
-            self.registry,
-            position,
-            constructor.game_object_textures,
-        )
-
-        # Add it to the various collections and systems
-        sprite_list.append(sprite_obj)
-        self.ids.setdefault(constructor.game_object_type, []).append(sprite_obj)
-        if constructor.game_object_type not in {
-            GameObjectType.FLOOR,
-            GameObjectType.POTION,
-        }:
-            self.physics_engine.add_game_object(
-                sprite_obj,
-                constructor.game_object_type,
-                blocking=constructor.blocking,
+        # Get the constructor and create a game object
+        game_object_id = -1
+        if constructor.components:
+            game_object_id = self.registry.create_game_object(
+                constructor.components,
+                kinematic=constructor.kinematic,
             )
         if constructor.blocking:
             self.registry.add_wall(Vec2d(*position))
 
-        # Return the game object ID
-        return game_object_id
+        # Create a sprite and add its ID to the dictionary
+        sprite_class = AnimatedSprite if constructor.kinematic else HadesSprite
+        sprite = sprite_class(
+            (game_object_id, constructor.game_object_type),
+            position,
+            constructor.textures,
+        )
+        self.ids.setdefault(constructor.game_object_type, []).append(sprite)
+
+        # Add the game object to the physics engine if it is blocking or kinematic
+        if constructor.blocking or constructor.kinematic:
+            self.physics_engine.add_sprite(
+                sprite,
+                moment_of_inertia=(
+                    None if constructor.blocking else self.physics_engine.MOMENT_INF
+                ),
+                body_type=(
+                    self.physics_engine.STATIC  # type: ignore[misc]
+                    if constructor.blocking
+                    else self.physics_engine.DYNAMIC  # type: ignore[misc]
+                ),
+                max_velocity=MAX_VELOCITY,
+                collision_type=constructor.game_object_type.name,
+            )
+        return sprite
 
     def __init__(self: Game, level: int) -> None:
         """Initialise the object.
@@ -132,19 +138,14 @@ class Game(View):
             level: The level to create a game for.
         """
         super().__init__()
-        generation_result = create_map(level)
-        self.level_constants: LevelConstants = LevelConstants(*generation_result[1])
-        self.registry: Registry = Registry()
-        self.ids: dict[GameObjectType, list[HadesSprite]] = {}
+        # Arcade types
+        self.game_camera: Camera = Camera()
+        self.gui_camera: Camera = Camera()
+        self.physics_engine: PymunkPhysicsEngine = PymunkPhysicsEngine(damping=DAMPING)
         self.tile_sprites: SpriteList[HadesSprite] = SpriteList[HadesSprite]()
         self.entity_sprites: SpriteList[HadesSprite] = SpriteList[HadesSprite]()
         self.item_sprites: SpriteList[HadesSprite] = SpriteList[HadesSprite]()
-        self.physics_engine: PhysicsEngine = PhysicsEngine()
-        self.game_camera: Camera = Camera()
-        self.gui_camera: Camera = Camera()
-        self.possible_enemy_spawns: list[tuple[int, int]] = []
-        self.upper_camera_x: float = -1
-        self.upper_camera_y: float = -1
+        self.nearest_item: list[HadesSprite] = []
         self.player_status_text: Text = Text(
             "Money: 0",
             10,
@@ -152,9 +153,18 @@ class Game(View):
             font_size=20,
         )
 
+        # Custom types
+        generation_result, self.level_constants = create_map(level)
+        self.registry: Registry = Registry()
+
+        # Custom collections
+        self.ids: dict[GameObjectType, list[HadesSprite]] = {}
+        self.possible_enemy_spawns: list[tuple[int, int]] = []
+        self.indicator_bars: list[IndicatorBar] = []
+
         # Initialise all the systems then the game objects
         self.registry.add_systems()
-        for count, tile in enumerate(generation_result[0]):
+        for count, tile in enumerate(generation_result):
             # Skip all empty tiles
             if tile in {TileType.Empty, TileType.Obstacle}:
                 continue
@@ -167,27 +177,24 @@ class Game(View):
 
             # Determine the type of the tile
             if tile == TileType.Wall:
-                self._initialise_game_object(WALL, self.tile_sprites, position)
+                self.tile_sprites.append(
+                    self._create_sprite(WALL, position),
+                )
             else:
                 if tile == TileType.Player:
-                    self._initialise_game_object(PLAYER, self.entity_sprites, position)
+                    self.entity_sprites.append(
+                        self._create_sprite(PLAYER, position),
+                    )
                 elif tile == TileType.Potion:
-                    self._initialise_game_object(POTION, self.item_sprites, position)
+                    self.item_sprites.append(
+                        self._create_sprite(POTION, position),
+                    )
 
                 # Make the game object's backdrop a floor
-                self._initialise_game_object(FLOOR, self.tile_sprites, position)
+                self.tile_sprites.append(
+                    self._create_sprite(FLOOR, position),
+                )
                 self.possible_enemy_spawns.append(position)
-
-        # Calculate upper_camera_x and upper_camera_y
-        half_sprite_size = SPRITE_SIZE / 2
-        screen_width, screen_height = grid_pos_to_pixel(
-            self.level_constants.width,
-            self.level_constants.height,
-        )
-        self.upper_camera_x, self.upper_camera_y = (
-            screen_width - self.game_camera.viewport_width - half_sprite_size,
-            screen_height - self.game_camera.viewport_height - half_sprite_size,
-        )
 
         # Generate half of the total enemies allowed to then schedule their generation
         for _ in range(TOTAL_ENEMY_COUNT // 2):
@@ -196,6 +203,8 @@ class Game(View):
             self.generate_enemy,
             ENEMY_GENERATE_INTERVAL,
         )
+
+        # self.window.push_handlers(on_key_press)
 
     def on_draw(self: Game) -> None:
         """Render the screen."""
@@ -207,16 +216,12 @@ class Game(View):
         self.game_camera.use()
 
         # Draw the various spritelists
-        self.tile_sprites.draw(pixelated=True)
-        self.item_sprites.draw(pixelated=True)
-        self.entity_sprites.draw(pixelated=True)
+        self.tile_sprites.draw(pixelated=True)  # type: ignore[no-untyped-call]
+        self.item_sprites.draw(pixelated=True)  # type: ignore[no-untyped-call]
+        self.entity_sprites.draw(pixelated=True)  # type: ignore[no-untyped-call]
 
         # Draw the gui on the screen
         self.gui_camera.use()
-        # self.player_status_text.value = "Money: " + str(
-        #     self.system.get_component_for_game_object(
-        #         ComponentType.MONEY,
-        #     ).value,
         self.player_status_text.draw()
 
     def on_update(self: Game, delta_time: float) -> None:
@@ -225,20 +230,50 @@ class Game(View):
         Args:
             delta_time: Time interval since the last time the function was called.
         """
-        # Check if the game should end
-        # if self.player.health.value <= 0 or not self.enemy_sprites:
-
         # Update the systems
         self.registry.update(delta_time)
 
-        # Update the entities
-        self.entity_sprites.on_update(delta_time)
+        # Process the results from the system updates
+        for entity in self.ids.get(GameObjectType.PLAYER, []) + self.ids.get(
+            GameObjectType.ENEMY,
+            [],
+        ):
+            new_force = Vec2d(0, 0)
+            if self.registry.has_component(entity.game_object_id, KeyboardMovement):
+                new_force = self.registry.get_system(
+                    KeyboardMovementSystem,
+                ).calculate_force(entity.game_object_id)
+            elif self.registry.has_component(entity.game_object_id, SteeringMovement):
+                new_force = self.registry.get_system(
+                    SteeringMovementSystem,
+                ).calculate_force(entity.game_object_id)
+            self.physics_engine.apply_force(
+                entity,
+                tuple(new_force),  # type: ignore[arg-type]
+            )
 
-        # Update the physics engine
+        # Update the physics engine and find the nearest item to the player
         self.physics_engine.step()
+        self.nearest_item = self.ids[GameObjectType.PLAYER][0].collides_with_list(
+            self.item_sprites,
+        )
 
-        # Position the camera
-        self.center_camera_on_player()
+        # Process the results from the physics engine
+        for entity in self.ids.get(GameObjectType.PLAYER, []) + self.ids.get(
+            GameObjectType.ENEMY,
+            [],
+        ):
+            kinematic_object, body = (
+                self.registry.get_kinematic_object(entity.game_object_id),
+                self.physics_engine.get_physics_object(entity).body,
+            )
+            kinematic_object.position = Vec2d(*body.position)
+            kinematic_object.velocity = Vec2d(*body.velocity)
+        for indicator_bar in self.indicator_bars:
+            indicator_bar.on_update(delta_time)
+
+        # Position the camera on the player
+        self.game_camera.center(self.ids[GameObjectType.PLAYER][0].position)
 
     def on_key_press(self: Game, symbol: int, modifiers: int) -> None:
         """Process key press functionality.
@@ -266,6 +301,26 @@ class Game(View):
                 player_movement.moving_west = True
             case key.D:
                 player_movement.moving_east = True
+            case key.C:
+                if (
+                    self.nearest_item
+                    and self.nearest_item[0].game_object_type in COLLECTIBLE_TYPES
+                    and self.registry.get_system(InventorySystem).add_item_to_inventory(
+                        self.ids[GameObjectType.PLAYER][0].game_object_id,
+                        self.nearest_item[0].game_object_id,
+                    )
+                ):
+                    self.nearest_item[0].remove_from_sprite_lists()
+            case key.E:
+                if (
+                    self.nearest_item
+                    and self.nearest_item[0].game_object_type in USABLE_TYPES
+                    and self.registry.get_system(EffectSystem).apply_effects(
+                        self.nearest_item[0].game_object_id,
+                        self.ids[GameObjectType.PLAYER][0].game_object_id,
+                    )
+                ):
+                    self.nearest_item[0].remove_from_sprite_lists()
 
     def on_key_release(self: Game, symbol: int, modifiers: int) -> None:
         """Process key release functionality.
@@ -338,38 +393,16 @@ class Game(View):
                 continue
 
             # Set the required data for the steering to correctly function
+            new_sprite = self._create_sprite(ENEMY, position)
+            self.entity_sprites.append(new_sprite)
             steering_movement = self.registry.get_component(
-                self._initialise_game_object(ENEMY, self.entity_sprites, position),
+                new_sprite.game_object_id,
                 SteeringMovement,
             )
             steering_movement.target_id = self.ids[GameObjectType.PLAYER][
                 0
             ].game_object_id
             return
-
-    def center_camera_on_player(self: Game) -> None:
-        """Centers the camera on the player."""
-        # Check if the camera is already centered on the player
-        player_sprite = self.ids[GameObjectType.PLAYER][0]
-        if self.game_camera.position == player_sprite.position:
-            return
-
-        # Make sure the camera doesn't extend beyond the boundaries
-        screen_center = (
-            min(
-                max(player_sprite.center_x - (self.game_camera.viewport_width / 2), 0),
-                self.upper_camera_x,
-            ),
-            min(
-                max(player_sprite.center_y - (self.game_camera.viewport_height / 2), 0),
-                self.upper_camera_y,
-            ),
-        )
-
-        # Check if the camera position has changed. If so, move the camera to the new
-        # position
-        if self.game_camera.position != screen_center:
-            self.game_camera.move_to(screen_center)
 
     def __repr__(self: Game) -> str:
         """Return a human-readable representation of this object.

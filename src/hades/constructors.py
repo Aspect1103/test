@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 # Builtin
-from typing import TYPE_CHECKING, ClassVar, Final, NamedTuple
+from typing import TYPE_CHECKING, Final, NamedTuple
 
 # Custom
 from hades.constants import GameObjectType
-from hades.textures import TextureType
 from hades_extensions.game_objects import SteeringBehaviours, SteeringMovementState
 from hades_extensions.game_objects.components import (
+    EffectApplier,
     Footprints,
     Inventory,
     KeyboardMovement,
@@ -18,62 +18,52 @@ from hades_extensions.game_objects.components import (
 )
 
 if TYPE_CHECKING:
-    from arcade import Texture
+    from typing import ClassVar
 
     from hades_extensions.game_objects import ComponentBase
 
-__all__ = (
-    "ENEMY",
-    "FLOOR",
-    "GameObjectConstructor",
-    "GameObjectTextures",
-    "PLAYER",
-    "POTION",
-    "WALL",
-)
-
-
-class GameObjectTextures(NamedTuple):
-    """Stores the different textures that a game object can have."""
-
-    default_texture: Texture
+__all__ = ("ENEMY", "FLOOR", "GameObjectConstructor", "PLAYER", "POTION", "WALL")
 
 
 class GameObjectConstructor(NamedTuple):
     """Represents a constructor for a game object.
 
     Args:
-        game_object_type: The type of this game object.
-        game_object_textures: The collection of textures which relate to this game
-        object.
-        components: A list of components that are part of this game object.
+        game_object_type: The game object's type.
+        name: The game object's name.
+        textures: The game object's texture paths.
+        components: The game object's components.
         blocking: Whether the game object blocks sprite movement or not.
         kinematic: Whether the game object should have a kinematic object or not.
     """
 
     game_object_type: GameObjectType
-    game_object_textures: GameObjectTextures
+    name: str
+    textures: list[str]
     components: ClassVar[list[ComponentBase]] = []
     blocking: bool = False
     kinematic: bool = False
 
 
 # Static tiles
-WALL: Final = GameObjectConstructor(
+WALL: Final[GameObjectConstructor] = GameObjectConstructor(
     GameObjectType.WALL,
-    GameObjectTextures(TextureType.WALL.value),
+    "Wall",
+    ["wall.png"],
     blocking=True,
 )
-FLOOR: Final = GameObjectConstructor(
+FLOOR: Final[GameObjectConstructor] = GameObjectConstructor(
     GameObjectType.FLOOR,
-    GameObjectTextures(TextureType.FLOOR.value),
+    "Floor",
+    ["floor.png"],
 )
 
-# Player characters
-PLAYER: Final = GameObjectConstructor(
+# Entities
+PLAYER: Final[GameObjectConstructor] = GameObjectConstructor(
     GameObjectType.PLAYER,
-    GameObjectTextures(TextureType.PLAYER_IDLE.value[0]),
-    components=[
+    "Player",
+    ["player_idle.png"],
+    [
         Inventory(6, 5),
         MovementForce(5000, 5),
         KeyboardMovement(),
@@ -81,12 +71,11 @@ PLAYER: Final = GameObjectConstructor(
     ],
     kinematic=True,
 )
-
-# Enemy characters
-ENEMY: Final = GameObjectConstructor(
+ENEMY: Final[GameObjectConstructor] = GameObjectConstructor(
     GameObjectType.ENEMY,
-    GameObjectTextures(TextureType.ENEMY_IDLE.value[0]),
-    components=[
+    "Enemy",
+    ["enemy_idle.png"],
+    [
         MovementForce(1000, 5),
         SteeringMovement(
             {
@@ -102,10 +91,10 @@ ENEMY: Final = GameObjectConstructor(
     kinematic=True,
 )
 
-# Potion tiles
-POTION: Final = GameObjectConstructor(
+# Items
+POTION: Final[GameObjectConstructor] = GameObjectConstructor(
     GameObjectType.POTION,
-    GameObjectTextures(TextureType.HEALTH_POTION.value),
+    "Health Potion",
+    ["health_potion.png"],
+    [EffectApplier({}, {})],
 )
-
-# TODO: This file needs rewriting

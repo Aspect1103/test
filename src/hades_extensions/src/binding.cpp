@@ -16,7 +16,7 @@
 struct py_handle_hash {
   /// Calculate the hash of a pybind11 handle.
   ///
-  /// @param handle The handle to calculate the hash of.
+  /// @param handle - The handle to calculate the hash of.
   /// @return The hash of the handle.
   auto operator()(const pybind11::handle &handle) const -> std::size_t { return hash(handle); }
 };
@@ -25,8 +25,8 @@ struct py_handle_hash {
 struct py_handle_equal {
   /// Check if two pybind11 handles are equal.
   ///
-  /// @param handle_one The first handle to compare.
-  /// @param handle_two The second handle to compare.
+  /// @param handle_one - The first handle to compare.
+  /// @param handle_two - The second handle to compare.
   /// @return Whether the two handles are equal or not.
   auto operator()(const pybind11::handle &handle_one, const pybind11::handle &handle_two) const noexcept -> bool {
     return handle_one.is(handle_two);
@@ -36,9 +36,9 @@ struct py_handle_equal {
 // ----- FUNCTIONS -------------------------------------------
 /// Get the system from the registry.
 ///
-/// @tparam T The type of system to find.
-/// @param registry The registry that manages the game objects, components, and systems.
-/// @throws RegistryError If the system is not registered.
+/// @tparam T - The type of system to find.
+/// @param registry - The registry that manages the game objects, components, and systems.
+/// @throws RegistryError - If the system is not registered.
 /// @return The system from the registry.
 template <typename T>
 auto get_system_impl(const Registry &registry) -> std::shared_ptr<SystemBase> {
@@ -65,18 +65,27 @@ auto make_system_types()
 
 /// Get the type index for a given component type.
 ///
-/// @param component_type The component type.
-/// @throws std::runtime_error If the component type is invalid.
+/// @param component_type - The component type.
+/// @throws std::runtime_error - If the component type is invalid.
 /// @return The type index for the component type.
 inline auto get_type_index(const pybind11::handle &component_type) -> std::type_index {
-  static const auto &component_types =
+  static const auto &component_types{
       make_component_types<Armour, ArmourRegen, Attacks, EffectApplier, Footprints, Health, Inventory, KeyboardMovement,
-                           Money, MovementForce, StatusEffectData, StatusEffects, SteeringMovement, Upgrades>();
-  const auto iter = component_types.find(component_type);
+                           Money, MovementForce, StatusEffectData, StatusEffects, SteeringMovement, Upgrades>()};
+  const auto iter{component_types.find(component_type)};
   if (iter == component_types.end()) {
     throw std::runtime_error("Invalid component type provided.");
   }
   return iter->second;
+}
+
+/// Make a C++ action function from a pybind11 function.
+///
+/// @param py_func - The pybind11 function.
+/// @return The C++ action function.
+auto make_action_function(const pybind11::function &py_func) -> ActionFunction {
+  // NOLINTNEXTLINE(bugprone-exception-escape)
+  return [py_func](int level) { return py_func(level).cast<double>(); };
 }
 
 // ----- PYTHON MODULE CREATION ------------------------------
@@ -85,15 +94,8 @@ PYBIND11_MODULE(hades_extensions, module) {  // NOLINT
   module.doc() = "Manages the various C++ extension modules for the game.";
 
   // Create the generation module
-  pybind11::module generation =
-      module.def_submodule("generation", "Generates the dungeon and places game objects in it.");
-  generation.def("create_map", &create_map, pybind11::arg("level"), pybind11::arg("seed") = pybind11::none(),
-                 "Generate the game map for a given game level.\n\n"
-                 "Args:\n"
-                 "    level: The game level to generate a map for.\n"
-                 "    seed: The seed to initialise the random generator.\n\n"
-                 "Returns:\n"
-                 "    A tuple containing the generated map and the level constants.");
+  pybind11::module generation{
+      module.def_submodule("generation", "Generates the dungeon and places game objects in it.")};
   pybind11::enum_<TileType>(generation, "TileType")
       .value("Empty", TileType::Empty)
       .value("Floor", TileType::Floor)
@@ -101,6 +103,17 @@ PYBIND11_MODULE(hades_extensions, module) {  // NOLINT
       .value("Obstacle", TileType::Obstacle)
       .value("Player", TileType::Player)
       .value("Potion", TileType::Potion);
+  pybind11::class_<LevelConstants>(generation, "LevelConstants", "Holds the constants for a specific level.")
+      .def_readonly("level", &LevelConstants::level)
+      .def_readonly("width", &LevelConstants::width)
+      .def_readonly("height", &LevelConstants::height);
+  generation.def("create_map", &create_map, pybind11::arg("level"), pybind11::arg("seed") = pybind11::none(),
+                 "Generate the game map for a given game level.\n\n"
+                 "Args:\n"
+                 "    level: The game level to generate a map for.\n"
+                 "    seed: The seed to initialise the random generator.\n\n"
+                 "Returns:\n"
+                 "    A tuple containing the generated map and the level constants.");
 
   // Create the game objects, game_objects/systems, and game_objects/components modules
   pybind11::module game_objects = module.def_submodule(
@@ -113,12 +126,6 @@ PYBIND11_MODULE(hades_extensions, module) {  // NOLINT
   // Add the global constants and the base classes
   game_objects.attr("SPRITE_SCALE") = SPRITE_SCALE;
   game_objects.attr("SPRITE_SIZE") = SPRITE_SIZE;
-  game_objects.def(
-      "ActionFunction",
-      [](const ActionFunction &func) {
-        return pybind11::cpp_function([func](const int level) { return func(level); });
-      },
-      "A function that can be applied to a component.");
   const pybind11::class_<ComponentBase, std::shared_ptr<ComponentBase>> component_base(
       game_objects, "ComponentBase", "The base class for all components.");
   pybind11::class_<SystemBase, std::shared_ptr<SystemBase>>(game_objects, "SystemBase",
@@ -187,6 +194,12 @@ PYBIND11_MODULE(hades_extensions, module) {  // NOLINT
            "    scalar: The scalar to divide by.\n\n"
            "Returns:\n"
            "    The quotient of the vector and the scalar.")
+      .def(
+          // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+          "__iter__", [](const Vec2d &vec) { return pybind11::make_iterator(&vec.x, &vec.y + 1); },
+          "Get an iterator to the vector.\n\n"
+          "Returns:\n"
+          "    An iterator to the vector.")
       .def("magnitude", &Vec2d::magnitude,
            "Calculate the magnitude of the vector.\n\n"
            "Returns:\n"
@@ -472,7 +485,11 @@ PYBIND11_MODULE(hades_extensions, module) {  // NOLINT
       .def_readwrite("target_component", &StatusEffect::target_component);
   pybind11::class_<StatusEffectData>(components, "StatusEffectData",
                                      "Represents the data required to apply a status effect.")
-      .def(pybind11::init<StatusEffectType, ActionFunction, ActionFunction, ActionFunction>(),
+      .def(pybind11::init([](const StatusEffectType status_effect_type, const pybind11::function &increase,
+                             const pybind11::function &duration, const pybind11::function &interval) {
+             return StatusEffectData(status_effect_type, make_action_function(increase), make_action_function(duration),
+                                     make_action_function(interval));
+           }),
            pybind11::arg("status_effect_type"), pybind11::arg("increase"), pybind11::arg("duration"),
            pybind11::arg("interval"),
            "Initialise the object.\n\n"
@@ -494,12 +511,19 @@ PYBIND11_MODULE(hades_extensions, module) {  // NOLINT
 
              // Iterate through the instant effects and add them to the mapping
              for (const auto &[type, func] : instant_effects) {
-               target_instant_effects.emplace(get_type_index(type), func.cast<ActionFunction>());
+               target_instant_effects.emplace(get_type_index(type),
+                                              make_action_function(func.cast<pybind11::function>()));
              }
 
              // Iterate through the status effects and add them to the mapping
              for (const auto &[type, data] : status_effects) {
-               target_status_effects.emplace(get_type_index(type), data.cast<StatusEffectData>());
+               auto data_dict = data.cast<pybind11::dict>();
+               const auto status_effect_type = data_dict["status_effect_type"].cast<StatusEffectType>();
+               const auto increase = make_action_function(data_dict["increase"].cast<pybind11::function>());
+               const auto duration = make_action_function(data_dict["duration"].cast<pybind11::function>());
+               const auto interval = make_action_function(data_dict["interval"].cast<pybind11::function>());
+               target_status_effects.emplace(get_type_index(type),
+                                             StatusEffectData{status_effect_type, increase, duration, interval});
              }
 
              // Initialise the object
@@ -523,30 +547,16 @@ PYBIND11_MODULE(hades_extensions, module) {  // NOLINT
            "Process update logic for a status effect component.\n\n"
            "Args:\n"
            "    delta_time: The time interval since the last time the function was called.")
-      .def("apply_instant_effect", &EffectSystem::apply_instant_effect, pybind11::arg("game_object_id"),
-           pybind11::arg("target_component"), pybind11::arg("increase"), pybind11::arg("level"),
-           "Apply an instant effect to a game object.\n\n"
+      .def("apply_effects", &EffectSystem::apply_effects, pybind11::arg("game_object_id"),
+           pybind11::arg("target_game_object_id"),
+           "Apply effects to a game object..\n\n"
            "Args:\n"
-           "    game_object_id: The ID of the game object to apply the effect to.\n"
-           "    target_component: The component to apply the effect to.\n"
-           "    increase: The increase function to apply.\n"
-           "    level: The level of the effect to apply.\n\n"
+           "    game_object_id: The ID of the game object to get the effects from.\n"
+           "    target_game_object_id: The ID of the game object to apply the effects to.\n\n"
            "Raises:\n"
-           "    RegistryError: If the game object does not exist or does not have the target component.\n\n"
+           "    RegistryError: If either game object does not exist or does not have the required components.\n\n"
            "Returns:\n"
-           "    Whether the instant effect was applied or not.")
-      .def("apply_status_effect", &EffectSystem::apply_status_effect, pybind11::arg("game_object_id"),
-           pybind11::arg("target_component"), pybind11::arg("status_effect_data"), pybind11::arg("level"),
-           "Apply a status effect to a game object.\n\n"
-           "Args:\n"
-           "    game_object_id: The ID of the game object to apply the effect to.\n"
-           "    target_component: The component to apply the effect to.\n"
-           "    status_effect_data: The data required to apply the status effect.\n"
-           "    level: The level of the effect to apply.\n\n"
-           "Raises:\n"
-           "    RegistryError: If the game object does not exist or does not have the target component.\n\n"
-           "Returns:\n"
-           "    Whether the status effect was applied or not.");
+           "    Whether the effects were applied or not.");
 
   // Add the inventory system as well as relevant structures/components
   register_exception<InventorySpaceError>(game_objects, "InventorySpaceError");
@@ -693,7 +703,7 @@ PYBIND11_MODULE(hades_extensions, module) {  // NOLINT
 
              // Iterate through the upgrades and add them to the mapping
              for (const auto &[type, func] : upgrades) {
-               target_upgrades.emplace(get_type_index(type), func.cast<ActionFunction>());
+               target_upgrades.emplace(get_type_index(type), make_action_function(func.cast<pybind11::function>()));
              }
 
              // Initialise the object

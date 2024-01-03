@@ -9,14 +9,14 @@
 
 // ----- CONSTANTS ------------------------------
 constexpr double FOOTPRINT_INTERVAL{0.5};
-constexpr int FOOTPRINT_LIMIT{10};
+constexpr int FOOTPRINT_LIMIT{5};
 constexpr double TARGET_DISTANCE{3 * SPRITE_SIZE};
 constexpr int MAX_DEGREE{360};
 
 // ----- FUNCTIONS ------------------------------
 void FootprintSystem::update(const double delta_time) const {
   // Update the time since the last footprint then check if a new footprint should be created
-  for (auto &[game_object_id, component_tuple] : get_registry()->find_components<Footprints>()) {
+  for (const auto &[game_object_id, component_tuple] : get_registry()->find_components<Footprints>()) {
     const auto footprints{std::get<0>(component_tuple)};
     footprints->time_since_last_footprint += delta_time;
     if (footprints->time_since_last_footprint < FOOTPRINT_INTERVAL) {
@@ -100,7 +100,7 @@ auto SteeringMovementSystem::calculate_force(const GameObjectID game_object_id) 
 void SteeringMovementSystem::update_path_list(const GameObjectID target_game_object_id,
                                               const std::deque<Vec2d> &footprints) const {
   // Update the path list for all SteeringMovement components that have the correct target ID
-  for (auto &[game_object_id, component_tuple] : get_registry()->find_components<SteeringMovement>()) {
+  for (const auto &[game_object_id, component_tuple] : get_registry()->find_components<SteeringMovement>()) {
     const auto steering_movement{std::get<0>(component_tuple)};
     if (steering_movement->target_id != target_game_object_id) {
       continue;
